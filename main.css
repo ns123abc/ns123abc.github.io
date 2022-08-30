@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kanit&family=Source+Sans+Pro&family=Source+Serif+Pro:ital,wght@1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Kanit&family=Source+Sans+Pro&family=Source+Serif+Pro:ital,wght@1,300&display=swap');
 
 
 
@@ -34,14 +35,14 @@ main ul ul { margin-bottom:0 }
 main ul li, main ol li { line-height:20px;margin-bottom:5px }
 main p { line-height:160% }
 main ::selection { background-color:#72dec2;color:whitesmoke;text-decoration:none }
-main q { font-family: Silkscreen, serif;font-size:18px;font-style:italic;display:block;max-width:400px }
+main q { font-family: Charmcursive serif;font-size:18px;font-style:italic;display:block;max-width:400px }
 main img, main svg { max-width:100%;display:block;margin:0 0 30px }
 main pre { overflow:auto;background:#efefef;padding:10px;font-size:80%;margin-bottom:30px }
 main pre code { color:whitesmoke}
 main code { white-space:pre }
 main hr { clear:both }
 main kbd { color:whitesmoke;font-size:12px;display:inline-block;padding:2px 5px;font-weight:bold;border-radius:4px;margin-bottom:1px;line-height:16px;border:2px solid whitesmoke;background:black }
-.main-recent a {color:whitesmoke}
+.main-recent a {color:whitesmoke} 
 .foot-nav a {color:whitesmoke; }
 footer { border-top:1.5px solid;padding:30px 0 0 0;clear:both }
 footer > * { display:inline-block;margin-right:5px }
