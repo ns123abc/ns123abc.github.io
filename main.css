@@ -4,7 +4,7 @@
 
 
 
-* { margin:0;padding:0;box-sizing:border-box;text-decoration:none;color:whitesmoke }
+* { margin:5;padding:0;box-sizing:border-box;text-decoration:none;color:whitesmoke }
 body {background-color:black }
 .body1 { padding:30px;font-family: Silkscreen, serif;font-size:16px; background-color:black; }
 .body2{ padding:30px;font-family: sans-serif-pro, serif;font-size:18px; background-color:black; }
