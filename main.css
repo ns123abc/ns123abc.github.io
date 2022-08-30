@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit&family=Source+Sans+Pro&display=swap');
 
 
 
 * { margin:0;padding:0;box-sizing:border-box;text-decoration:none;color:whitesmoke }
-body { padding:30px;font-family: serif;font-size:16px; background-color:black; }
+body {background-color:black }
+.body1 { padding:30px;font-family: Silkscreen, serif;font-size:16px; background-color:black; }
+.body2{ padding:30px;font-family: Kanit, serif;font-size:20px; background-color:black; }
 body > *, body > * > *, main figure > *, main figure > div > *, main p { margin-bottom:30px }
 body a.self,body a.parent { font-style:italic }
 table td, table th { vertical-align:top;padding:2.5px 5px;text-align:left }
