@@ -412,7 +412,8 @@ a.wanted {
   :root { --paper: #fff; --deep: #000; --slate: #000; --warm: #000; --hold: #fff; }
   .mark, nav.main-nav a { color: #fff; text-shadow: none; }
   header, nav.main-nav { background: #000; background-image: none; }
-  main > p, nav.main-nav a[aria-current="page"] { border-color: #000; text-decoration-color: #000; }
+  main > p { border-color: #000; text-decoration-color: #000; }
+  nav.main-nav a[aria-current="page"] { text-decoration-color: #fff; }
 }
 
 @media (forced-colors: active) {
