@@ -23,29 +23,39 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Pick pages to check
-        id: target
+      - name: Detect build.py
+        id: guard
         run: |
           if [ -f build.py ]; then
-            echo "build=true" >> "$GITHUB_OUTPUT"
-            echo "glob=./site/**/*.html" >> "$GITHUB_OUTPUT"
+            echo "present=true" >> "$GITHUB_OUTPUT"
           else
-            echo "build=false" >> "$GITHUB_OUTPUT"
-            echo "glob=./*.html" >> "$GITHUB_OUTPUT"
+            echo "present=false" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: actions/setup-python@v7
-        if: steps.target.outputs.build == 'true'
+        if: steps.guard.outputs.present == 'true'
         with:
           python-version: "3.12"
 
       - name: Build
-        if: steps.target.outputs.build == 'true'
+        if: steps.guard.outputs.present == 'true'
         run: |
           if [ -f requirements.txt ]; then
             python -m pip install -r requirements.txt
           fi
           python3 build.py
+
+      # build.py writes no site/ until content/ exists. Until then Pages serves
+      # the root HTML, so that is what the external check has to read.
+      - name: Choose pages
+        id: target
+        run: |
+          if [ -d site ] && find site -name '*.html' -print -quit | grep -q .; then
+            echo "glob=./site/**/*.html" >> "$GITHUB_OUTPUT"
+          else
+            echo "glob=./*.html" >> "$GITHUB_OUTPUT"
+            echo "::notice::site/ has no HTML; checking the root pages GitHub Pages is serving."
+          fi
 
       # --scheme limits the check to external http(s) links; internal links are build.py's job.
       - name: Check external links
