@@ -12,8 +12,10 @@ New images go to images/<name>.jpg or .png, where <name> is the source name lowe
 with anything outside [a-z0-9_-] turned into "-". PNG stays PNG; everything else becomes
 JPEG (quality 80, progressive). The script prints an <img> tag with width and height.
 
-EXIF (including GPS), XMP, IPTC and comments are always removed. Colour profiles are kept,
-so colours don't shift. When no resize is needed the pixels are left exactly as they are
+EXIF (including GPS), XMP, IPTC and comments are always removed. A colour profile is kept
+when it matches the saved pixels, so colours don't shift. Anything other than RGB or grey
+is converted to RGB, and a profile for the old space is dropped, including when the image
+is not resized. Otherwise, when no resize is needed the pixels are left exactly as they are
 and only metadata is removed, except that a JPEG is re-encoded if that makes it at least
 30% smaller (the source was saved at a much higher quality than the site needs).
 
@@ -170,9 +172,11 @@ def process(src, out, width, palette):
     icc = im.info.get("icc_profile")
     rotated = im.getexif().get(0x0112, 1) != 1
     im = ImageOps.exif_transpose(im)
+    converted = False
     if im.mode == "P" or im.mode not in ("RGB", "RGBA", "L", "LA"):
         has_alpha = "transparency" in im.info or "A" in im.getbands()
         im = im.convert("RGBA" if has_alpha else "RGB")
+        converted = True
     if fmt == "JPEG" and "A" in im.getbands():
         raise SystemExit(f"{src}: has transparency; save it as PNG first")
 
@@ -190,7 +194,9 @@ def process(src, out, width, palette):
                 encoded, how = stripped, "lossless, metadata removed"
     else:
         encoded, how = encode_jpeg(im, icc), f"quality {JPEG_QUALITY}"
-        if not resized and not rotated and src_format == "JPEG":
+        # Keeping the stripped source would undo the conversion and leave a
+        # CMYK (or other) profile on the old colour space.
+        if not resized and not rotated and not converted and src_format == "JPEG":
             stripped = strip_jpeg(data)
             if not same_pixels(Image.open(io.BytesIO(stripped)), Image.open(io.BytesIO(data))):
                 raise SystemExit(f"{src}: metadata strip changed pixels; refusing")

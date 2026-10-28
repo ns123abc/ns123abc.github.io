@@ -43,7 +43,8 @@ jobs:
           if [ -f requirements.txt ]; then
             python -m pip install -r requirements.txt
           fi
-          python -m pip install pytest==9.2.0
+          # Pillow is only for tests/test_add_image.py. The build stays on requirements.txt.
+          python -m pip install pytest==9.2.0 Pillow==13.0.0
 
       - name: Build
         run: python3 build.py
