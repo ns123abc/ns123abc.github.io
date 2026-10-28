@@ -23,7 +23,7 @@ Prose, in CommonMark.
 Front matter is a flat `key: value` block between `---` lines, parsed by the build. The keys are `title`, `parent`, `created`, `date`, `date_approx`, `summary`, and `aliases`. An unknown key or a duplicate key fails the build. An empty value means the key is absent. One pair of matching quotes around a value is stripped.
 
 - `parent` names a page that already exists. Top-level pages omit it. `parent: index` is an error. A cycle is an error.
-- `created` is `YYYY-MM-DD` when you set it.
+- `created`, when you set it, is a real calendar day in `YYYY-MM-DD`. `2022-02-30` is an error.
 - `summary` is optional. When you set it, it is the description meta tag. You write it yourself. The build never derives one.
 - `aliases` is accepted and ignored.
 - `date` belongs on log entries only.
@@ -36,7 +36,7 @@ An image is a Markdown image whose file is already in the repo, for example `![a
 
 ## Add a log entry
 
-Create `content/log/YYYY-MM-DD.md`. The filename is the slug and the date. The built page is `YYYY-MM-DD.html`, so `[[2022-08-29]]` links to it the same way as any other slug.
+Create `content/log/YYYY-MM-DD.md`. The filename is the slug and the date, and it has to be a real calendar day. `2022-02-30.md` is an error. The built page is `YYYY-MM-DD.html`, so `[[2022-08-29]]` links to it the same way as any other slug.
 
 A file with no front matter is enough. The title is then the date.
 
@@ -59,7 +59,7 @@ That file is `content/log/2022-09-01.md`. The slug stays `2022-09-01`; `title` i
 
 ## Add a list item
 
-A list is a page at `content/<slug>.md` that contains a real `## YYYY` heading. The heading text is the four-digit year alone. The page still needs `title`. A file under `content/log/` stays a log entry. A year heading inside a fenced code block leaves the page as an ordinary page.
+A list is a `content/<slug>.md` file whose body has a level-2 heading of four digits (`## 2022`). The heading text is the year alone. The page still needs `title`. Any other file there is a page. A year line inside a code fence, and a `###` heading, leave the file a page. A `content/log/YYYY-MM-DD.md` file is a log, and a year heading in its body leaves it a log.
 
 Under each year heading, write one item per line, in this shape: `- **Title**: Creator. Year`
 
@@ -96,7 +96,9 @@ python3 -m pip install -r requirements.txt
 python3 build.py
 ```
 
-`python3 build.py` writes `site/` and exits non-zero on errors. Until the `content/` directory exists, it warns and leaves `site/` alone. `site/` is gitignored. Open `site/index.html`.
+`python3 build.py` writes `site/` and exits non-zero on errors. When `content/` is not a directory, it warns, writes nothing, leaves an existing `site/` in place, and exits 0. An empty `content/` directory is still loaded, and the build then stops with an error if `content/index.md` is missing, before it writes `site/`. `site/` is gitignored. Open `site/index.html`.
+
+If `extras.py` is present, the build calls its `extend` and `build` hooks. Those hooks are specified in [AGENTS.md](AGENTS.md).
 
 ## Deploy
 
