@@ -35,6 +35,7 @@ header img { display:block;width:100px;height:auto }
 nav { display:flex;flex-wrap:wrap;gap:15px 45px;margin:0 0 30px;font-size:16px;line-height:24px }
 nav ul { list-style:none }
 body a.self, body a.parent { font-style:italic }
+a[aria-current] { font-weight:bold;text-decoration:underline 2px;text-underline-offset:4px }
 
 main { max-width:720px;clear:both;margin-bottom:45px;overflow-wrap:break-word }
 /* Prose that legacy markup leaves outside <main> */
@@ -55,6 +56,13 @@ main a::before { content:"{";content:"{" / "" }
 main a::after { content:"}";content:"}" / "" }
 main a[href^="http"]::before, main a[target="_blank"]::before { content:"[";content:"[" / "" }
 main a[href^="http"]::after, main a[target="_blank"]::after { content:"]";content:"]" / "" }
+a.wanted { color:var(--dim);text-decoration:underline dotted 1px;text-underline-offset:4px }
+a.wanted:hover, a.wanted:focus-visible { color:var(--hot) }
+
+.incoming { clear:both;margin-top:45px;padding-top:15px;border-top:1.5px dashed var(--rule);color:var(--dim);font-size:16px }
+.incoming b { font-family:var(--chrome);font-weight:normal;color:var(--fg) }
+.incoming a { color:var(--fg) }
+.incoming a:hover, .incoming a:focus-visible { color:var(--hot) }
 
 main img, main svg { display:block;max-width:100%;height:auto;margin-bottom:15px }
 main figcaption { color:var(--dim);font-size:16px }
