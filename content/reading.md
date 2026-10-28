@@ -23,14 +23,14 @@ For a list of all time favourites, see [[directory]].
 - **The Greatest Minds and Ideas of All Time**: Will Durant
 - **The Singularity Is Near: When Humans Transcend Biology**: Ray Kurzweil
 - **Life 3.0**: Max Tegmark
-- **A New Kind of Science**: Stephen Wolfram
+- **A New Kind of Science**: [[wolfram|Stephen Wolfram]]
 - **Influence**: RObert B. Cialdini
 - **Health Design Thinking**: Bon Ku and Ellen Lupton
 - **Bounded Rationality**: Gerd Gigerenzer and Reinhard Stelten
 - **Unravelling Complexity: The Life and work of Gregory Chaitin**: Shyam Wuppuluri
 - **The Unsettling Of America**: Wendell Berry
-- **Meditations on First Philosophy**: René Descartes
-- **Crime and Punishment**: Fyodor Dostoevsky
+- **[[descartes|Meditations on First Philosophy]]**: René Descartes
+- **[[dostoevsky|Crime and Punishment]]**: Fyodor Dostoevsky
 
 ## Reading list 2021
 
