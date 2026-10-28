@@ -17,7 +17,7 @@ His works explore psychology in the troubled socio-political atmosphere of 19th 
 
 Dostoevsky was born in Moscow, Russia, in 1821. His family was very religious and so was he. He began writing widely as a child, as well as being home-schooled until he was sent to private school when he was 13 years old. Two years later his mother dies of tuberculosis. Dostoevsky's father, an alcoholic with a short temper, retreated into seclusion, and became even more wretched in temperment. This anger was abused on his serfs. While still at school, Dostoevsky learned that his father had been mysteriously murdered. The death of his father had affected Dostoevsky profoundly. His first seziure coincided with the death of his father; his first indication of his life long battle with epilepsy.
 
-After finishing his studies in the engineering academy at 23 years old, his passion for literature made him resign from the career he was trained for and devoted himself to writing.
+After finishing his studies in the engineering academy at 23 years old, his passion for [[literature]] made him resign from the career he was trained for and devoted himself to writing.
 
 He was in great financial difficulty because of his extravagant lifestyle and his developing gambling addiction. Doestoevsky began his career writing fiction about poor people in harsh situations. In 1843 he published his first novel, Poor Folk, showcasing the life of poor people, their relationship with rich people and poverty in general. The novel was admired by socialist and was labled as Russia's firts "social novel".
 

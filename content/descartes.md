@@ -19,7 +19,7 @@ Descartes wrote in the autobiographical portion of the Discourse (1673) that, wh
 
 Descartes viewed geometry as the basic mathematical science and he considered his algebraic techniques to provide a powerful alternative to actual compass-and ruler constructions when the latter became too intricate. In the 19th century, algebra and analysis took precedence over geometry, the rectilinear coordinate system of algebraic geometry came to be called "Cartesian coordinates" in honor of Descartes' discovery.
 
-On the night of November 10, 1619, Descartes had three dreams that seemed to provide him with a mission of life. The dreams themselves are interesting and complex. Descartes took from them the message that he could set out to reform all knowledge. He decided to begin with philosophy, since the principles of the other sciences must be derived from it.
+On the night of November 10, 1619, Descartes had three dreams that seemed to provide him with a mission of life. The dreams themselves are interesting and complex. Descartes took from them the message that he could set out to reform all knowledge. He decided to begin with [[philosophy]], since the principles of the other sciences must be derived from it.
 
 His methodological advice which i think gave birth to computational thinking: *break your work up into small steps that you can understand completely and about which have utter certainty.*
 
