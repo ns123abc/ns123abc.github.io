@@ -1,17 +1,30 @@
 """Gate for the words ``content/`` renders to.
 
-``build.py`` renders each Markdown body. A word is a case-sensitive run of
-letters, digits, and underscores in that HTML: text nodes, plus a non-empty
-``alt``. The multiset for every ``content/*.md`` and ``content/log/*.md``
-file must match the snapshot below, and rendering the same body again must
-produce the same words.
+The gate runs the real build, ``extras.py`` hooks included. A word is a
+case-sensitive run of letters, digits, and underscores in rendered HTML: text
+nodes, plus a non-empty ``alt``.
 
-The snapshot is those rendered words. A mismatch means the words changed.
+- The user's words. Every ``content/*.md`` and ``content/log/*.md`` page, as
+  built, starts with its own Markdown body rendered on its own, byte for byte.
+  That part's words must match the snapshot below, so a changed sentence in
+  ``content/`` fails.
+- Generated text. Whatever a hook appends after that (the home page's recent
+  list), each year page, ``wanted.html`` and ``404.html`` are not the user's
+  prose and are not in the snapshot. Outside an embedded ``<div>`` they may
+  only show labels: the titles, slugs and dates of the pages they link to,
+  plus the wanted slugs on ``wanted.html`` and the page titles ``wanted`` and
+  ``404``. A ``<div>`` a hook embeds must sit under a heading that links to its
+  source page and show only that page's words: all of them for a log entry, a
+  subset for one section of a list.
+
+The snapshot is the user's rendered words. A mismatch means the words changed.
 """
 import collections
 import os
 import re
+import shutil
 import sys
+import tempfile
 import unittest
 from html.parser import HTMLParser
 
@@ -21,6 +34,9 @@ sys.path.insert(0, REPO)
 import build  # noqa: E402
 
 _WORDS = re.compile(r"\w+")
+_HEADING = re.compile(r"h[1-6]")
+_PAGE_HREF = re.compile(r"([a-z0-9_-]+)\.html(?:#.*)?")
+_GENERATED_FILES = {"wanted.html": "wanted", "404.html": "404"}
 
 
 class _Visible(HTMLParser):
@@ -60,32 +76,197 @@ def canon(counter):
     return ("\n".join(lines) + "\n") if lines else ""
 
 
-class ProseGateTest(unittest.TestCase):
-    def test_rendered_words_match_snapshot(self):
-        site = build.load(REPO)
-        self.assertEqual(site.errors, [])
-        build.process(site)
-        self.assertEqual(site.errors, [])
+def _words(*texts):
+    return collections.Counter(_WORDS.findall(" ".join(t for t in texts if t)))
+
+
+class _Generated(HTMLParser):
+    """Generated HTML split into labels (outside any <div>) and embedded top-level <div>s.
+
+    Each embed is tagged with the page that the nearest heading before it links to.
+    """
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.depth, self.heading, self.in_heading = 0, None, False
+        self.labels, self.linked, self.embeds = [], [], []
+
+    def _text(self, text):
+        (self.embeds[-1][1] if self.depth else self.labels).append(text)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "div":
+            if self.depth == 0:
+                self.embeds.append((self.heading, []))
+            self.depth += 1
+        elif self.depth == 0:
+            if _HEADING.fullmatch(tag):
+                self.in_heading, self.heading = True, None
+            href = _PAGE_HREF.fullmatch(attrs.get("href") or "")
+            if href:
+                self.linked.append(href.group(1))
+                if self.in_heading and self.heading is None:
+                    self.heading = href.group(1)
+        if (attrs.get("alt") or "").strip():
+            self._text(attrs["alt"])
+
+    handle_startendtag = handle_starttag
+
+    def handle_endtag(self, tag):
+        if tag == "div" and self.depth:
+            self.depth -= 1
+        elif self.depth == 0 and _HEADING.fullmatch(tag):
+            self.in_heading = False
+
+    def handle_data(self, data):
+        self._text(data)
+
+
+def _beyond(shown, allowed):
+    extra = shown - allowed
+    return " ".join(sorted(f"+{w}" + (f" x{n}" if n > 1 else "") for w, n in extra.items()))
+
+
+def _check_generated(where, html, site, own, labels=None):
+    """Problems with generated HTML. `own` maps a content slug to the words of its body."""
+    parser = _Generated()
+    parser.feed(html)
+    parser.close()
+    if parser.depth:
+        return [f"{where}: unclosed <div>"]
+    allowed = collections.Counter(labels or {})
+    for slug in parser.linked:
+        page = site.pages.get(slug)
+        if page is not None:
+            allowed += _words(page.title, page.slug, page.date, page.created)
+    problems = []
+    added = _beyond(_words(*parser.labels), allowed)
+    if added:
+        problems.append(f"{where}: generated labels show words no linked page provides: {added}")
+    for slug, texts in parser.embeds:
+        source = site.pages.get(slug) if slug else None
+        if source is None or source.path is None:
+            problems.append(f"{where}: embedded text whose heading links to no content page ({slug!r})")
+            continue
+        shown = _words(*texts)
+        added = _beyond(shown, own[slug])
+        if added:
+            problems.append(f"{where}: text embedded from {source.path} isn't that page's words: {added}")
+        elif source.kind == "log" and shown != own[slug]:
+            missing = " ".join(sorted(f"-{w}" for w in own[slug] - shown))
+            problems.append(f"{where}: {source.path} is embedded with words missing: {missing}")
+    return problems
+
+
+def _diff(old, new):
+    def counts(text):
+        return collections.Counter({w: int(n) for w, n in (line.rsplit(" ", 1) for line in text.splitlines())})
+    old, new = counts(old), counts(new)
+    return " ".join(sorted([f"-{w}" for w in old - new] + [f"+{w}" for w in new - old]))
+
+
+def check(root):
+    """Build `root`; return (problems, generated parts checked). The gate passes with no problems."""
+    with tempfile.TemporaryDirectory() as tmp:
+        out = os.path.join(tmp, "site")
+        site = build.build(root, out)
+        if site.errors:
+            return [f"build: {e}" for e in site.errors], []
         known = frozenset(site.pages)
-        got = {}
+        problems, checked, got, own, appended = [], [], {}, {}, {}
         for page in site.pages.values():
-            built = visible_words(page.html)
-            again = visible_words(render_body(page.body_md, known))
-            self.assertEqual(
-                built,
-                again,
-                f"{page.path}: re-rendering changed the words",
-            )
-            got[page.path] = canon(built)
+            if page.path is None:
+                continue
+            with open(os.path.join(root, page.path), encoding="utf-8") as fh:
+                rendered = render_body(build.parse_front_matter(fh.read())[1], known)
+            own[page.slug] = visible_words(rendered)
+            got[page.path] = canon(own[page.slug])
+            if page.html.startswith(rendered):
+                appended[page.path] = page.html[len(rendered):]
+            else:
+                problems.append(f"{page.path}: the built page doesn't start with its own body rendered alone")
         extra = sorted(set(got) - set(SNAPSHOT))
         missing = sorted(set(SNAPSHOT) - set(got))
-        self.assertEqual(
-            (extra, missing),
-            ([], []),
-            f"content paths changed: extra={extra} missing={missing}",
+        if extra or missing:
+            problems.append(f"content paths changed: extra={extra} missing={missing}")
+        for path in sorted(set(got) & set(SNAPSHOT)):
+            if got[path] != SNAPSHOT[path]:
+                problems.append(f"{path}: words changed: {_diff(SNAPSHOT[path], got[path])}")
+
+        generated = [(f"{path} (appended)", html, None) for path, html in sorted(appended.items()) if html.strip()]
+        generated += [(f"{p.slug}.html", p.html, None) for p in site.pages.values() if p.path is None]
+        wanted_slugs = _words(*site.wanted)
+        for name, title in _GENERATED_FILES.items():
+            path = os.path.join(out, name)
+            if os.path.isfile(path):
+                with open(path, encoding="utf-8") as fh:
+                    page = fh.read()
+                labels = _words(title) + (wanted_slugs if name == "wanted.html" else collections.Counter())
+                generated.append((name, page[page.index("<main>"):page.index("</main>")], labels))
+        for where, html, labels in generated:
+            checked.append(where)
+            problems += _check_generated(where, html, site, own, labels)
+        return problems, checked
+
+
+def _copy_repo(dest):
+    for name in ("content", "templates", "fonts", "images"):
+        if os.path.isdir(os.path.join(REPO, name)):
+            shutil.copytree(os.path.join(REPO, name), os.path.join(dest, name))
+    for name in ("main.css", "extras.py"):
+        if os.path.isfile(os.path.join(REPO, name)):
+            shutil.copyfile(os.path.join(REPO, name), os.path.join(dest, name))
+
+
+HAS_EXTRAS = os.path.isfile(os.path.join(REPO, "extras.py"))
+
+
+class ProseGateTest(unittest.TestCase):
+    def test_rendered_words_match_snapshot(self):
+        problems, checked = check(REPO)
+        self.assertEqual(problems, [])
+        if HAS_EXTRAS:
+            for where in ("content/index.md (appended)", "2022.html", "wanted.html", "404.html"):
+                self.assertIn(where, checked)
+
+    def test_a_changed_sentence_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            _copy_repo(tmp)
+            path = os.path.join(tmp, "content", "about.md")
+            with open(path, encoding="utf-8") as fh:
+                text = fh.read()
+            self.assertIn("digital playground", text)
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(text.replace("digital playground", "digital garden", 1))
+            problems, _ = check(tmp)
+        self.assertEqual(problems, ["content/about.md: words changed: +garden -playground"])
+
+    @unittest.skipUnless(HAS_EXTRAS, "no extras.py")
+    def test_words_a_hook_adds_fail(self):
+        wrapper = (
+            "import importlib.util\n"
+            f"spec = importlib.util.spec_from_file_location('real_extras', {os.path.join(REPO, 'extras.py')!r})\n"
+            "real = importlib.util.module_from_spec(spec)\n"
+            "spec.loader.exec_module(real)\n"
+            "build = real.build\n"
+            "\n"
+            "def extend(site):\n"
+            "    real.extend(site)\n"
+            "    site.pages['index'].body_md += '\\n\\nLatest writing.\\n'\n"
+            "    site.pages['2022'].body_md += '\\n\\n<div>\\nInvented zqx.\\n</div>\\n'\n"
+            "    site.pages['2021'].body_md = site.pages['2021'].body_md.replace('<div>', '<div>\\nIntro', 1)\n"
         )
-        for path in sorted(got):
-            self.assertMultiLineEqual(got[path], SNAPSHOT[path], path)
+        with tempfile.TemporaryDirectory() as tmp:
+            _copy_repo(tmp)
+            with open(os.path.join(tmp, "extras.py"), "w", encoding="utf-8") as fh:
+                fh.write(wrapper)
+            problems, _ = check(tmp)
+        self.assertEqual(problems, [
+            "content/index.md (appended): generated labels show words no linked page provides: +Latest +writing",
+            "2021.html: text embedded from content/watching.md isn't that page's words: +Intro",
+            "2022.html: text embedded from content/watching.md isn't that page's words: +Invented +zqx",
+        ])
 
 
 SNAPSHOT = {

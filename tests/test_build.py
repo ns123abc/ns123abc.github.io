@@ -23,7 +23,7 @@ BASE = {
     "images/slogo2.png": b"\x89PNG2",
     "images/slogo3.png": b"\x89PNG3",
     "images/slogo4.png": b"\x89PNG4",
-    "images/slogo7.png": b"\x89PNG7",
+    "images/favicon.png": b"\x89PNGf",
 }
 
 HEADER = '<header><a href="index.html"><img src="images/mlogo.jpg" alt="NEO — home"></a></header>'
@@ -105,9 +105,15 @@ class SkeletonTest(SiteTest):
                                          "<title>about — NEO</title>\n"
                                          '<meta name="description" content="Who &amp; &quot;why&quot;.">\n'
                                          '<link rel="stylesheet" href="main.css">\n'
-                                         '<link rel="icon" href="images/slogo7.png" type="image/png">\n'
+                                         '<link rel="icon" href="images/favicon.png" type="image/png">\n'
                                          "</head>\n<body>\n"))
         self.assertNotIn('name="description"', self.html("nikhil_sareen.html"))
+
+    def test_icon_is_the_small_favicon(self):
+        with open(os.path.join(REPO, "templates", "page.html"), encoding="utf-8") as fh:
+            href = re.search(r'<link rel="icon" href="([^"]+)"', fh.read()).group(1)
+        self.assertEqual(href, "images/favicon.png")
+        self.assertLess(os.path.getsize(os.path.join(REPO, href)), 16 * 1024)
 
     def test_summary_is_never_generated(self):
         site = self.build({"content/about.md": "---\ntitle: about\n---\n\nA long first paragraph.\n"})
