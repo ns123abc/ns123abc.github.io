@@ -337,8 +337,15 @@ h2 {
   letter-spacing: 0;
 }
 
-.paths article:first-child::before {
-  content: "ア\A 7\A カ\A 0\A ソ\A 2\A ミ\A 9";
+.paths article > .trace {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.trace::before {
+  content: "ア\A 7\A カ\A 0\A ソ\A 2\A ミ\A 9" / "";
   position: absolute;
   top: 1.15rem;
   right: 0.9rem;
