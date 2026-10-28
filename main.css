@@ -1,49 +1,101 @@
-@import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kanit&family=Source+Sans+Pro&family=Source+Serif+Pro:ital,wght@1,300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Kanit&family=Source+Sans+Pro&family=Source+Serif+Pro:ital,wght@1,300&display=swap');
+/* Silkscreen by Jason Kottke, SIL Open Font License 1.1: see fonts/OFL.txt */
+@font-face { font-family:Silkscreen;src:url("fonts/silkscreen-regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap }
+@font-face { font-family:Silkscreen;src:url("fonts/silkscreen-bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap }
 
+/* Silkscreen is drawn on a 1/8 em pixel grid: keep its sizes at multiples of 8px. */
+:root {
+  --chrome:Silkscreen, ui-monospace, monospace;
+  --prose:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --fg:whitesmoke;
+  --dim:#a6a6a6;
+  --rule:#444;
+  --well:#1a1a1a;
+  --hot:red;
+  --gutter:30px;
+  color-scheme:dark;
+}
 
+* { margin:0;padding:0;box-sizing:border-box }
+body { background:black;color:var(--fg);padding:var(--gutter);font:18px/1.6 var(--prose);-webkit-text-size-adjust:100% }
+a { color:inherit;text-decoration:none }
+a:hover { color:var(--hot) }
+:focus-visible { outline:2px solid var(--hot);outline-offset:2px }
+a:focus-visible { color:var(--hot) }
+::selection { background:#72dec2;color:black }
 
-* { margin:5;padding:0;box-sizing:border-box;text-decoration:none;color:whitesmoke }
-body {background-color:black }
-.body1 { padding:30px;font-family: Silkscreen, serif;font-size:16px; background-color:black; }
-.body2{ padding:30px;font-family: sans-serif-pro, serif;font-size:18px; background-color:black; }
-body > *, body > * > *, main figure > *, main figure > div > *, main p { margin-bottom:30px }
-body a.self,body a.parent { font-style:italic }
-table td, table th { vertical-align:top;padding:2.5px 5px;text-align:left }
-table td > pre, table th > pre { background:none;padding:0;margin:0 }
-header { float:left;margin:5px 30px 0 0;min-height:90px }
-header img { display:block }
-nav { margin:0 0 30px }
-nav ul { padding:0;margin:0 45px 30px 0;float:left }
-main { max-width:900px;clear:both }
-.main-nav {display: flex; margin:0; padding:0; list-style:none;}
-.main-nav a {color:whitesmoke; text-decoration:none; }
-.main-nav a:hover {color:red;}
-main a:before { content:"{" }
-main a:after { content:"}" }
-main a[target="_blank"]:before { content:"[" }
-main a[target="_blank"]:after { content:"]" }
+/* Legacy wrapper spans: let header, nav, main and footer style themselves. */
+.body1, .body2 { display:contents }
+
+header, nav, footer, h1, h2, h3 { font-family:var(--chrome) }
+
+header { float:left;margin:5px var(--gutter) 30px 0 }
+header img { display:block;width:100px;height:auto }
+
+nav { display:flex;flex-wrap:wrap;gap:15px 45px;margin:0 0 30px;font-size:16px;line-height:24px }
+nav ul { list-style:none }
+body a.self, body a.parent { font-style:italic }
+a[aria-current] { font-weight:bold;text-decoration:underline 2px;text-underline-offset:4px }
+
+main { max-width:720px;clear:both;margin-bottom:45px;overflow-wrap:break-word }
+/* Prose that legacy markup leaves outside <main> */
+body > :is(figure, h1, h2, h3, p, ul) { max-width:720px;margin-bottom:30px }
+h1 { font-size:32px;line-height:40px }
+h2 { font-size:24px;line-height:32px }
+h3 { font-size:16px;line-height:24px }
+h4 { font-size:inherit }
+h1, h2, h3, h4 { clear:both;margin-bottom:30px }
+:is(h1, h2, h3, h4) p { margin:0 }
+main p, main ul, main ol, main table, main figure, main pre, main hr, main iframe, main article, main blockquote { margin-bottom:30px }
+p:empty, ul:empty { display:none }
+main ul, main ol { margin-left:30px }
+main ul ul, main ol ol { margin-bottom:0 }
+main li { margin-bottom:5px }
+
+main a::before { content:"{";content:"{" / "" }
+main a::after { content:"}";content:"}" / "" }
+main a[href^="http"]::before, main a[target="_blank"]::before { content:"[";content:"[" / "" }
+main a[href^="http"]::after, main a[target="_blank"]::after { content:"]";content:"]" / "" }
+a.wanted { color:var(--dim);text-decoration:underline dotted 1px;text-underline-offset:4px }
+a.wanted:hover, a.wanted:focus-visible { color:var(--hot) }
+
+.incoming { clear:both;margin-top:45px;padding-top:15px;border-top:1.5px dashed var(--rule);color:var(--dim);font-size:16px }
+.incoming b { font-family:var(--chrome);font-weight:normal;color:var(--fg) }
+.incoming a { color:var(--fg) }
+.incoming a:hover, .incoming a:focus-visible { color:var(--hot) }
+
+main img, main svg { display:block;max-width:100%;height:auto;margin-bottom:15px }
+main figcaption { color:var(--dim);font-size:16px;margin-bottom:30px }
+main iframe { width:100%;height:480px;border:0 }
 main article { border-left:5px solid #efefef;padding-left:25px;clear:both }
-main cite { display:block;clear:both; margin-bottom:30px }
-main cite:before { content:"— " }
-main > figure:first-child img:first-child { margin-left:-30px;max-width:calc(100vw - 15px);width:800px }
-main iframe { width:100%;height:480px }
-main h1, main h2, main h3, main h4, main h5, main figure figcaption { max-width:900px;clear:both }
-main ul, main ol { margin:0 30px 30px 30px;clear:both }
-main ul ul { margin-bottom:0 }
-main ul li, main ol li { line-height:20px;margin-bottom:5px }
-main p { line-height:160% }
-main ::selection { background-color:#72dec2;color:whitesmoke;text-decoration:none }
-main q { font-family: Charmcursive serif;font-size:18px;font-style:italic;display:block;max-width:400px }
-main img, main svg { max-width:100%;display:block;margin:0 0 30px }
-main pre { overflow:auto;background:#efefef;padding:10px;font-size:80%;margin-bottom:30px }
-main pre code { color:whitesmoke}
-main code { white-space:pre }
-main hr { clear:both }
-main kbd { color:whitesmoke;font-size:12px;display:inline-block;padding:2px 5px;font-weight:bold;border-radius:4px;margin-bottom:1px;line-height:16px;border:2px solid whitesmoke;background:black }
-.main-recent a {color:whitesmoke} 
-.foot-nav a {color:whitesmoke; }
-footer { border-top:1.5px solid;padding:30px 0 0 0;clear:both }
-footer > * { display:inline-block;margin-right:5px }
-footer img { margin:0 0 -10px 0;width:30px } 
+main blockquote { border-left:5px solid var(--rule);padding-left:25px }
+main blockquote > :last-child { margin-bottom:0 }
+main q { display:block;max-width:400px;font-style:italic;margin-bottom:15px }
+main cite { display:block;clear:both;margin-bottom:30px;font-style:normal;color:var(--dim) }
+main cite::before { content:"— " }
+main hr { border:0;border-top:1.5px solid var(--rule) }
+
+main table { border-collapse:collapse;font-size:16px;line-height:1.5 }
+main td, main th { border:1px solid var(--rule);padding:5px 10px;vertical-align:top;text-align:left }
+main td > pre, main th > pre { background:none;padding:0;margin:0 }
+
+code, kbd, pre, samp { font-family:var(--mono);font-size:15px }
+main code { background:var(--well);padding:1px 5px;border-radius:3px }
+main pre { overflow:auto;background:var(--well);border:1px solid var(--rule);padding:15px;line-height:1.5 }
+main pre code { background:none;padding:0 }
+main kbd { font-size:12px;display:inline-block;padding:2px 5px;font-weight:bold;border-radius:4px;margin-bottom:1px;line-height:16px;border:2px solid var(--fg);background:black }
+
+footer { clear:both;border-top:1.5px solid;padding:30px 0 0;font-size:16px;line-height:24px }
+footer > * { display:inline-block;margin-right:5px;vertical-align:middle }
+footer a { white-space:nowrap }
+footer img { display:block;width:30px;height:30px }
+
+@media (max-width:600px) {
+  :root { --gutter:15px }
+  header { margin-bottom:15px }
+  header img { width:80px }
+  nav { gap:10px 30px }
+  h1 { font-size:24px;line-height:32px }
+  h2 { font-size:16px;line-height:24px }
+  main ul, main ol { margin-left:20px }
+}
