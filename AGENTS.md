@@ -51,7 +51,7 @@ A slug is the old filename lowercased (`nikhil_sareen`, `datascience`), from the
 - The slug is the file name: `content/log/2022-08-29.md` is `pages["2022-08-29"]`, with `kind: log`.
 - Each entry gets its own flat page, `2022-08-29.html`, so `[[2022-08-29]]` works like any other link.
 - One file per day. A second entry on the same day goes into that day's file, so slugs can't collide.
-- The file name is the date. `date` defaults to it, and if `date` is written it must match. For an entry about the past, name the file by that date and set `date_approx: true`.
+- The file name is the date, and it has to be a real calendar day (`2022-02-30.md` is an error). `date` defaults to it, and if `date` is written it must match. For an entry about the past, name the file by that date and set `date_approx: true`.
 - Log entries never appear in the nav.
 
 ### Front matter
@@ -68,7 +68,7 @@ Required and optional:
 
 - Pages: only `title` is required.
 - Log entries: nothing is required, and the front matter block itself is optional. `title` defaults to the date.
-- `created` is `YYYY-MM-DD` when present.
+- `created`, when present, is a real calendar day in `YYYY-MM-DD`. `2022-02-30` is an error.
 - `date` is allowed only on log entries.
 - `date_approx` defaults to `false`.
 - `parent` must name an existing page, with no cycles. Top-level pages have no `parent`; `parent: index` is an error.
@@ -96,9 +96,18 @@ A bare `[[slug]]` displays the slug as typed, as in Obsidian, so `[[nikhil_saree
 
 `- **Title**: Creator. Year` under `## YYYY` headings.
 
+### Kinds
+
+The build assigns `kind` from where the file sits and from its headings.
+
+- A `content/<slug>.md` file whose body has a level-2 heading of four digits (`## 2022`) is a `list`. Any other `content/<slug>.md` file is a `page`. A year line inside a code fence, and a `###` heading, leave the file a `page`.
+- A `content/log/YYYY-MM-DD.md` file is a `log`. A year heading in the body leaves it a `log`.
+
 ### Build command
 
 `python3 build.py` writes `site/` and exits non-zero on errors. The one dependency, `markdown-it-py`, is pinned in `requirements.txt`.
+
+When `content/` is not a directory, the build warns (`content/: missing, so there is nothing to build and site/ is left alone`), writes nothing, leaves an existing `site/` in place, and exits 0. An empty `content/` directory is still loaded. After `extend` (see Hooks), the build requires an `index` page; without one it errors (`content/index.md` missing) and stops before writing `site/`.
 
 ### Site model
 
@@ -106,10 +115,12 @@ A bare `[[slug]]` displays the slug as typed, as in Obsidian, so `[[nikhil_saree
   - `slug`
   - `title`
   - `parent`
-  - `kind`: `page`, `log` or `list`
+  - `kind`: `page`, `log` or `list`, assigned as in Kinds
   - `created`: from front matter
-  - `date`: from front matter, log entries only
-  - `updated`: last edited, from git
+  - `date`: the log file name; empty on pages and lists
+  - `date_approx`: from front matter, default `false`
+  - `updated`: the git author date (`YYYY-MM-DD`) of the newest commit that touches the source file. Empty when the file has no commit, when git can't be read, or on a shallow clone. A shallow clone warns (`clone with fetch-depth: 0`) and the build still succeeds.
+  - `path`: source path relative to the repo root (`content/about.md`, `content/log/2022-08-29.md`). Empty on a page a hook adds.
   - `summary`
   - `body_md`
   - `html`
@@ -117,6 +128,15 @@ A bare `[[slug]]` displays the slug as typed, as in Obsidian, so `[[nikhil_saree
   - `backlinks`
 - `wanted[slug]`: the set of pages linking to `slug`, for link targets that have no page.
 - `BASE_URL`: a single constant, defaulting to `https://ns123abc.github.io`.
+
+### Hooks
+
+`extras.py` at the repo root is optional. Hooks can `import build`. When that module defines them, the build calls:
+
+- `extend(site)`, after pages are loaded and `updated` is filled, before wikilinks are resolved and HTML is rendered. It may add pages to `site.pages` or edit `body_md`. A page it adds keeps the `kind` and `updated` the hook sets; the default `kind` is `page`. Editing `body_md` here leaves `kind` as it was at load.
+- `build(site, out)`, after the HTML pages are written and before the broken-link check. `site.render(page)` returns a full HTML page. `site.write(path, data)` adds a file under the output directory. Writing one path twice is an error.
+
+A missing `content/` directory skips both. Load errors skip `extend`. Errors while resolving links (a missing `index`, a bad `parent`, a bad wikilink) come after `extend`; `build` is skipped and `site/` stays unwritten.
 
 ### HTML skeleton
 
