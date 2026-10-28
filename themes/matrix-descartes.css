@@ -1,0 +1,892 @@
+/* Matrix / Descartes
+   Operator screen and green rain from The Matrix (1999).
+   Two equal paths: the film's choice of two ways forward, as layout.
+   Clear sentence: Descartes, Meditation II, ego sum, ego existo.
+   Sample preview. System fonts only. No JavaScript.
+*/
+
+:root {
+  color-scheme: dark;
+  --void: #000;
+  --plate: #07160e;
+  --ink: #e8fff0;
+  --muted: #b7ebc8;
+  --index: #8fd9ae;
+  --line: rgba(150, 255, 180, 0.28);
+  --line-strong: rgba(190, 255, 210, 0.78);
+  --paper: #f4f1e6;
+  --paper-ink: #1a1915;
+  --paper-muted: #24362c;
+  --latin: #2a382e;
+  --serif: "Iowan Old Style", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, "Noto Serif", "Liberation Serif", "Times New Roman", Times, serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --rain: "MS Gothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans CJK JP", "WenQuanYi Micro Hei Mono", "Droid Sans Fallback", ui-monospace, monospace;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html { background: var(--void); }
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--void);
+  color: var(--ink);
+  font: 18px/1.55 var(--serif);
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
+}
+
+img { display: block; max-width: 100%; height: auto; border: 0; }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: 3px;
+}
+
+::selection { background: var(--paper); color: #102016; }
+
+.principle ::selection { background: var(--paper-ink); color: var(--paper); }
+
+/* Falling code. Fixed, decorative, and kept off the text plates. */
+
+.rain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+}
+
+.rain,
+.rain * { pointer-events: none; }
+
+.rain span {
+  flex: 0 0 auto;
+  width: 1em;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--rain);
+  font-size: 15px;
+  line-height: 1.2;
+  opacity: 0.82;
+}
+
+.rain span:nth-child(3n) { opacity: 0.48; }
+.rain span:nth-child(3n+1) { opacity: 0.92; }
+
+.rain span::before {
+  display: block;
+  white-space: pre;
+  font: inherit;
+  line-height: inherit;
+  color: #1fa84a;
+  text-shadow: 0 0 8px rgba(0, 255, 90, 0.28);
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .rain span::before {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(
+      to bottom,
+      #f4fff8 0%,
+      #f4fff8 2.2%,
+      #5dff88 7%,
+      #128a38 16%,
+      transparent 24%,
+      transparent 33%,
+      #f4fff8 33%,
+      #5dff88 39%,
+      #0f6e30 50%,
+      transparent 58%,
+      transparent 67%,
+      #f4fff8 67%,
+      #3dff6e 74%,
+      #0c5c28 86%,
+      transparent 94%,
+      transparent 100%
+    );
+    background-size: 100% 50%;
+    background-repeat: repeat-y;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+@keyframes fall {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+
+.rain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 42%, transparent 52%, rgba(0, 0, 0, 0.55) 100%),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2) 0 1px,
+      transparent 1px 4px
+    );
+}
+
+@media (max-width: 719px) {
+  .rain span:nth-child(n+21) { display: none; }
+}
+
+/* The monitor. Rain stays in the margins and in the gaps between plates. */
+
+.screen {
+  position: relative;
+  z-index: 1;
+  width: min(880px, calc(100% - 32px));
+  margin: 4.25rem auto 2.5rem;
+  padding: 12px;
+  box-shadow: 0 0 0 1px rgba(170, 255, 190, 0.62);
+}
+
+.skip {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 2;
+  padding: 8px 12px;
+  background: var(--paper);
+  color: var(--paper-ink);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transform: translateY(-160%);
+}
+
+.skip:focus { transform: none; }
+
+header,
+nav,
+h1,
+.choice h2,
+.paths article,
+.sample,
+footer {
+  background: var(--plate);
+  border: 1px solid var(--line);
+}
+
+header {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 12px 18px;
+  padding: 12px 14px;
+}
+
+.mark { width: max-content; }
+
+.mark img { width: 72px; }
+
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  margin: 0;
+  font-family: var(--mono);
+}
+
+.readout div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+dt {
+  font-size: 0.875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--index);
+}
+
+dd {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.readout div:last-child dd::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 0.85em;
+  margin-left: 0.28em;
+  background: #3dff6e;
+  vertical-align: -0.08em;
+  animation: blink 1.15s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+nav { margin-top: 14px; padding: 0 10px; }
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.35rem;
+  list-style: none;
+  padding: 0;
+}
+
+nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 2px;
+  font-family: var(--mono);
+  font-size: 1rem;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+  text-decoration-color: rgba(61, 255, 110, 0.75);
+}
+
+nav a:hover,
+nav a:focus-visible {
+  color: #fff;
+  text-decoration-color: #fff;
+}
+
+main > * + * { margin-top: 14px; }
+
+h1,
+h2,
+h3 {
+  font-family: var(--mono);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  padding: 12px 14px;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+h2 {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.choice h2 { padding: 12px 14px; }
+
+.paths {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.paths article {
+  position: relative;
+  min-height: 13.5rem;
+  padding: 1.15rem 2.6rem 1.3rem 1.05rem;
+  border-color: var(--line-strong);
+  overflow: hidden;
+}
+
+.paths article > * { position: relative; z-index: 1; }
+
+.paths h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.index {
+  display: inline-block;
+  min-width: 2.2ch;
+  margin-right: 0.45rem;
+  color: var(--index);
+}
+
+.paths p {
+  max-width: 34ch;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.paths article:first-child::before {
+  content: "ア\A 7\A カ\A 0\A ソ\A 2\A ミ\A 9";
+  position: absolute;
+  top: 1.15rem;
+  right: 0.9rem;
+  width: 1.4em;
+  color: #3dff6e;
+  font-family: var(--rain);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+  white-space: pre;
+  opacity: 0.45;
+}
+
+.principle {
+  padding: 2.4rem 1rem 2.2rem;
+  background: var(--paper);
+  color: var(--paper-ink);
+  border: 1px solid #d8d2c2;
+  color-scheme: light;
+  text-align: center;
+}
+
+.principle h2 { color: var(--paper-muted); }
+
+.principle blockquote { margin-top: 0.9rem; }
+
+.principle blockquote p {
+  font-family: var(--serif);
+  font-size: 2.125rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--paper-ink);
+}
+
+.latin {
+  margin-top: 0.85rem;
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--latin);
+}
+
+.sample,
+footer { padding: 1.15rem 1rem 1.35rem; }
+
+.sample h2,
+footer h2 { margin-bottom: 0.85rem; }
+
+.sample p {
+  max-width: 62ch;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+footer ul {
+  display: grid;
+  gap: 0.9rem;
+  list-style: none;
+  padding: 0;
+}
+
+footer li {
+  max-width: 68ch;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+footer cite { font-style: italic; }
+
+.note {
+  max-width: 68ch;
+  margin-top: 1rem;
+  color: var(--index);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+footer { margin-top: 14px; }
+
+:target { scroll-margin-top: 16px; }
+
+@media (min-width: 720px) {
+  header {
+    grid-template-columns: auto 1fr;
+    padding: 14px 18px;
+  }
+
+  .mark img { width: 100px; }
+
+  .readout { justify-content: flex-end; }
+
+  nav { padding: 0 14px; }
+
+  h1,
+  .choice h2 { padding: 14px 18px; }
+
+  .paths { grid-template-columns: 1fr 1fr; }
+
+  .paths article { padding: 1.25rem 2.8rem 1.5rem 1.2rem; }
+
+  .principle { padding: 3.2rem 2rem 2.8rem; }
+
+  .principle blockquote p { font-size: 3.5rem; }
+
+  .sample,
+  footer { padding: 1.3rem 1.4rem 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rain span::before,
+  .readout div:last-child dd::after { animation: none; }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --plate: #000;
+    --ink: #fff;
+    --muted: #fff;
+    --line: #fff;
+    --line-strong: #fff;
+  }
+
+  .rain { opacity: 0.35; }
+
+  header,
+  nav,
+  h1,
+  .choice h2,
+  .paths article,
+  .sample,
+  footer,
+  .principle {
+    border-color: #fff;
+  }
+}
+
+@media (forced-colors: active) {
+  .rain { display: none; }
+
+  .screen { box-shadow: none; }
+
+  header,
+  nav,
+  h1,
+  .choice h2,
+  .paths article,
+  .sample,
+  footer,
+  .principle {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  a,
+  dt,
+  dd,
+  .principle blockquote p,
+  .latin,
+  .note {
+    color: CanvasText;
+  }
+
+  a { text-decoration: underline; }
+
+  :focus-visible { outline: 3px solid Highlight; }
+}
+
+@media print {
+  .rain,
+  .skip { display: none; }
+
+  body { background: #fff; color: #000; }
+
+  .screen { width: auto; margin: 0; box-shadow: none; }
+
+  header,
+  nav,
+  h1,
+  .choice h2,
+  .paths article,
+  .sample,
+  footer,
+  .principle {
+    background: #fff;
+    color: #000;
+    border-color: #000;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  a,
+  dt,
+  dd,
+  .principle blockquote p,
+  .latin,
+  .note,
+  .index {
+    color: #000;
+  }
+}
+
+.rain span:nth-child(1)::before {
+  content: "カ\A ケ\A 5\A ノ\A オ\A ハ\A ト\A セ\A ホ\A ワ\A ニ\A リ\A レ\A ク\A モ\A ア\A フ\A ニ\A テ\A タ\A メ\A テ\A マ\A セ\A ン\A ミ\A ヌ\A ヌ\A コ\A ラ\A コ\A ル\A ワ\A ハ\A ヤ\A シ\A ツ\A ヘ\A ヌ\A ノ\A ア\A ワ\A 7\A ア\A ト\A リ\A ナ\A ア\A セ\A ニ\A カ\A テ\A ヒ\A ロ\A リ\A ワ\A ヒ\A ア\A ヒ\A ロ\A ハ\A ヒ\A ス\A モ\A カ\A ケ\A 5\A ノ\A オ\A ハ\A ト\A セ\A ホ\A ワ\A ニ\A リ\A レ\A ク\A モ\A ア\A フ\A ニ\A テ\A タ\A メ\A テ\A マ\A セ\A ン\A ミ\A ヌ\A ヌ\A コ\A ラ\A コ\A ル\A ワ\A ハ\A ヤ\A シ\A ツ\A ヘ\A ヌ\A ノ\A ア\A ワ\A 7\A ア\A ト\A リ\A ナ\A ア\A セ\A ニ\A カ\A テ\A ヒ\A ロ\A リ\A ワ\A ヒ\A ア\A ヒ\A ロ\A ハ\A ヒ\A ス\A モ";
+  animation-duration: 8.5s;
+  animation-delay: -0.4s;
+  background-position: 0 0em;
+}
+.rain span:nth-child(2)::before {
+  content: "ケ\A マ\A ホ\A ノ\A 0\A ア\A ニ\A メ\A ス\A ソ\A ヤ\A ニ\A ユ\A ノ\A ト\A ツ\A セ\A ン\A ロ\A ア\A ト\A ク\A エ\A マ\A コ\A 1\A ナ\A ホ\A ホ\A ヘ\A ン\A ニ\A ネ\A ク\A ヌ\A ツ\A ノ\A チ\A ヒ\A モ\A ヒ\A ツ\A レ\A ウ\A ア\A ユ\A ロ\A ユ\A ラ\A ホ\A 8\A ノ\A キ\A ヌ\A 9\A ン\A ヌ\A ニ\A サ\A ヌ\A 5\A リ\A ム\A ソ\A ケ\A マ\A ホ\A ノ\A 0\A ア\A ニ\A メ\A ス\A ソ\A ヤ\A ニ\A ユ\A ノ\A ト\A ツ\A セ\A ン\A ロ\A ア\A ト\A ク\A エ\A マ\A コ\A 1\A ナ\A ホ\A ホ\A ヘ\A ン\A ニ\A ネ\A ク\A ヌ\A ツ\A ノ\A チ\A ヒ\A モ\A ヒ\A ツ\A レ\A ウ\A ア\A ユ\A ロ\A ユ\A ラ\A ホ\A 8\A ノ\A キ\A ヌ\A 9\A ン\A ヌ\A ニ\A サ\A ヌ\A 5\A リ\A ム\A ソ";
+  animation-duration: 11s;
+  animation-delay: -2.2s;
+  background-position: 0 -4em;
+}
+.rain span:nth-child(3)::before {
+  content: "ニ\A 5\A カ\A ヤ\A ク\A シ\A ユ\A 5\A ル\A ル\A ラ\A ノ\A ニ\A キ\A マ\A ル\A フ\A フ\A ロ\A フ\A ナ\A レ\A ヘ\A ヌ\A 4\A レ\A ク\A モ\A ロ\A ネ\A ヒ\A ハ\A ウ\A マ\A モ\A ハ\A ユ\A ネ\A ネ\A ワ\A テ\A ヨ\A カ\A ヘ\A マ\A ロ\A ケ\A ナ\A 2\A ノ\A ヘ\A エ\A ン\A イ\A ネ\A ケ\A ソ\A チ\A サ\A イ\A ハ\A ミ\A ア\A ラ\A ニ\A 5\A カ\A ヤ\A ク\A シ\A ユ\A 5\A ル\A ル\A ラ\A ノ\A ニ\A キ\A マ\A ル\A フ\A フ\A ロ\A フ\A ナ\A レ\A ヘ\A ヌ\A 4\A レ\A ク\A モ\A ロ\A ネ\A ヒ\A ハ\A ウ\A マ\A モ\A ハ\A ユ\A ネ\A ネ\A ワ\A テ\A ヨ\A カ\A ヘ\A マ\A ロ\A ケ\A ナ\A 2\A ノ\A ヘ\A エ\A ン\A イ\A ネ\A ケ\A ソ\A チ\A サ\A イ\A ハ\A ミ\A ア\A ラ";
+  animation-duration: 14.5s;
+  animation-delay: -5.1s;
+  background-position: 0 -9em;
+}
+.rain span:nth-child(4)::before {
+  content: "レ\A ハ\A シ\A ヒ\A ケ\A カ\A セ\A シ\A タ\A キ\A ラ\A ヨ\A ナ\A ア\A ル\A ヒ\A コ\A フ\A ツ\A ロ\A ク\A テ\A 2\A ケ\A 4\A ロ\A ネ\A フ\A ロ\A エ\A ム\A レ\A ル\A ミ\A 3\A ヘ\A ソ\A モ\A フ\A ヒ\A ヤ\A ヤ\A テ\A ニ\A ヌ\A ノ\A シ\A チ\A ラ\A マ\A エ\A ヨ\A ソ\A 9\A ツ\A ノ\A オ\A ヌ\A ト\A ナ\A ネ\A ム\A コ\A フ\A レ\A ハ\A シ\A ヒ\A ケ\A カ\A セ\A シ\A タ\A キ\A ラ\A ヨ\A ナ\A ア\A ル\A ヒ\A コ\A フ\A ツ\A ロ\A ク\A テ\A 2\A ケ\A 4\A ロ\A ネ\A フ\A ロ\A エ\A ム\A レ\A ル\A ミ\A 3\A ヘ\A ソ\A モ\A フ\A ヒ\A ヤ\A ヤ\A テ\A ニ\A ヌ\A ノ\A シ\A チ\A ラ\A マ\A エ\A ヨ\A ソ\A 9\A ツ\A ノ\A オ\A ヌ\A ト\A ナ\A ネ\A ム\A コ\A フ";
+  animation-duration: 9.5s;
+  animation-delay: -1.3s;
+  background-position: 0 -2em;
+}
+.rain span:nth-child(5)::before {
+  content: "ヒ\A ニ\A ラ\A チ\A ワ\A サ\A サ\A ヤ\A メ\A ヨ\A オ\A レ\A マ\A ヘ\A 1\A ニ\A ワ\A ム\A ル\A ラ\A イ\A ン\A ウ\A ニ\A 5\A ウ\A ス\A ラ\A リ\A サ\A ウ\A ラ\A ホ\A フ\A ミ\A ヌ\A キ\A タ\A ト\A 2\A オ\A ネ\A マ\A ヨ\A ニ\A ヒ\A ヌ\A ノ\A ユ\A ソ\A ラ\A キ\A 1\A ヤ\A イ\A ル\A 9\A ラ\A 7\A ネ\A マ\A リ\A レ\A ミ\A ヒ\A ニ\A ラ\A チ\A ワ\A サ\A サ\A ヤ\A メ\A ヨ\A オ\A レ\A マ\A ヘ\A 1\A ニ\A ワ\A ム\A ル\A ラ\A イ\A ン\A ウ\A ニ\A 5\A ウ\A ス\A ラ\A リ\A サ\A ウ\A ラ\A ホ\A フ\A ミ\A ヌ\A キ\A タ\A ト\A 2\A オ\A ネ\A マ\A ヨ\A ニ\A ヒ\A ヌ\A ノ\A ユ\A ソ\A ラ\A キ\A 1\A ヤ\A イ\A ル\A 9\A ラ\A 7\A ネ\A マ\A リ\A レ\A ミ";
+  animation-duration: 13s;
+  animation-delay: -7.4s;
+  background-position: 0 -7em;
+}
+.rain span:nth-child(6)::before {
+  content: "エ\A 2\A オ\A ノ\A ク\A ヘ\A ケ\A ナ\A 9\A ヨ\A セ\A ワ\A サ\A メ\A ツ\A ヨ\A レ\A ノ\A タ\A シ\A ニ\A ヘ\A レ\A ス\A チ\A リ\A メ\A ハ\A カ\A エ\A サ\A ツ\A ホ\A ク\A ス\A コ\A テ\A リ\A ヘ\A セ\A ソ\A ツ\A 2\A テ\A ヘ\A ヘ\A カ\A ホ\A イ\A ト\A キ\A ル\A ヒ\A エ\A ヨ\A ケ\A ナ\A 1\A ホ\A エ\A ヒ\A 2\A 7\A ユ\A エ\A 2\A オ\A ノ\A ク\A ヘ\A ケ\A ナ\A 9\A ヨ\A セ\A ワ\A サ\A メ\A ツ\A ヨ\A レ\A ノ\A タ\A シ\A ニ\A ヘ\A レ\A ス\A チ\A リ\A メ\A ハ\A カ\A エ\A サ\A ツ\A ホ\A ク\A ス\A コ\A テ\A リ\A ヘ\A セ\A ソ\A ツ\A 2\A テ\A ヘ\A ヘ\A カ\A ホ\A イ\A ト\A キ\A ル\A ヒ\A エ\A ヨ\A ケ\A ナ\A 1\A ホ\A エ\A ヒ\A 2\A 7\A ユ";
+  animation-duration: 16.5s;
+  animation-delay: -3.6s;
+  background-position: 0 -11em;
+}
+.rain span:nth-child(7)::before {
+  content: "ト\A ウ\A ヤ\A ム\A モ\A ケ\A イ\A ノ\A イ\A ラ\A ヤ\A サ\A メ\A ヤ\A ウ\A ト\A ヤ\A エ\A ヘ\A ユ\A イ\A チ\A モ\A ア\A ロ\A ワ\A レ\A ネ\A サ\A モ\A オ\A ロ\A フ\A ム\A タ\A イ\A セ\A レ\A ノ\A ケ\A 9\A ウ\A ユ\A ン\A サ\A ニ\A メ\A ツ\A ラ\A ユ\A 1\A カ\A ロ\A ハ\A キ\A モ\A オ\A ア\A ツ\A ク\A 4\A ヘ\A ト\A ナ\A ト\A ウ\A ヤ\A ム\A モ\A ケ\A イ\A ノ\A イ\A ラ\A ヤ\A サ\A メ\A ヤ\A ウ\A ト\A ヤ\A エ\A ヘ\A ユ\A イ\A チ\A モ\A ア\A ロ\A ワ\A レ\A ネ\A サ\A モ\A オ\A ロ\A フ\A ム\A タ\A イ\A セ\A レ\A ノ\A ケ\A 9\A ウ\A ユ\A ン\A サ\A ニ\A メ\A ツ\A ラ\A ユ\A 1\A カ\A ロ\A ハ\A キ\A モ\A オ\A ア\A ツ\A ク\A 4\A ヘ\A ト\A ナ";
+  animation-duration: 10.5s;
+  animation-delay: -6.2s;
+  background-position: 0 -5em;
+}
+.rain span:nth-child(8)::before {
+  content: "ヒ\A 4\A ク\A サ\A イ\A 5\A キ\A ノ\A オ\A ヌ\A リ\A ヘ\A ノ\A ア\A サ\A ナ\A ム\A ナ\A テ\A タ\A ナ\A ミ\A ヌ\A セ\A セ\A ト\A 9\A ネ\A ハ\A ワ\A ン\A 7\A メ\A ル\A ケ\A テ\A ヌ\A ニ\A メ\A ラ\A ヨ\A ラ\A ユ\A ラ\A モ\A メ\A コ\A リ\A ロ\A ニ\A タ\A ム\A エ\A ミ\A ヤ\A キ\A ハ\A ノ\A ヌ\A 1\A ニ\A マ\A ワ\A コ\A ヒ\A 4\A ク\A サ\A イ\A 5\A キ\A ノ\A オ\A ヌ\A リ\A ヘ\A ノ\A ア\A サ\A ナ\A ム\A ナ\A テ\A タ\A ナ\A ミ\A ヌ\A セ\A セ\A ト\A 9\A ネ\A ハ\A ワ\A ン\A 7\A メ\A ル\A ケ\A テ\A ヌ\A ニ\A メ\A ラ\A ヨ\A ラ\A ユ\A ラ\A モ\A メ\A コ\A リ\A ロ\A ニ\A タ\A ム\A エ\A ミ\A ヤ\A キ\A ハ\A ノ\A ヌ\A 1\A ニ\A マ\A ワ\A コ";
+  animation-duration: 12.5s;
+  animation-delay: -4.1s;
+  background-position: 0 -13em;
+}
+.rain span:nth-child(9)::before {
+  content: "ナ\A カ\A ニ\A ヨ\A 4\A ウ\A サ\A ル\A レ\A セ\A テ\A 0\A ロ\A ソ\A ヌ\A ハ\A ル\A ヘ\A ス\A ウ\A オ\A ノ\A ム\A ロ\A 2\A ミ\A ス\A 1\A レ\A ア\A ノ\A ヘ\A エ\A ネ\A ユ\A ヘ\A テ\A ミ\A ア\A ワ\A フ\A ケ\A サ\A ワ\A オ\A ネ\A チ\A チ\A レ\A セ\A リ\A ノ\A ヤ\A ハ\A ミ\A ヒ\A ナ\A 8\A カ\A ト\A ナ\A カ\A ト\A リ\A ナ\A カ\A ニ\A ヨ\A 4\A ウ\A サ\A ル\A レ\A セ\A テ\A 0\A ロ\A ソ\A ヌ\A ハ\A ル\A ヘ\A ス\A ウ\A オ\A ノ\A ム\A ロ\A 2\A ミ\A ス\A 1\A レ\A ア\A ノ\A ヘ\A エ\A ネ\A ユ\A ヘ\A テ\A ミ\A ア\A ワ\A フ\A ケ\A サ\A ワ\A オ\A ネ\A チ\A チ\A レ\A セ\A リ\A ノ\A ヤ\A ハ\A ミ\A ヒ\A ナ\A 8\A カ\A ト\A ナ\A カ\A ト\A リ";
+  animation-duration: 8.5s;
+  animation-delay: -0.4s;
+  background-position: 0 0em;
+}
+.rain span:nth-child(10)::before {
+  content: "ノ\A ヘ\A モ\A ン\A コ\A ニ\A メ\A ヨ\A タ\A ノ\A メ\A エ\A ハ\A ヘ\A ン\A ホ\A ソ\A ヌ\A ス\A チ\A テ\A セ\A ミ\A ウ\A ス\A モ\A ホ\A ヌ\A ソ\A コ\A ワ\A ナ\A ヨ\A キ\A モ\A ノ\A ス\A ン\A セ\A 1\A ノ\A ウ\A 7\A ネ\A ト\A ケ\A ン\A セ\A ツ\A ソ\A ユ\A リ\A マ\A ヌ\A ミ\A 7\A ニ\A イ\A ワ\A ソ\A ナ\A ツ\A フ\A オ\A ノ\A ヘ\A モ\A ン\A コ\A ニ\A メ\A ヨ\A タ\A ノ\A メ\A エ\A ハ\A ヘ\A ン\A ホ\A ソ\A ヌ\A ス\A チ\A テ\A セ\A ミ\A ウ\A ス\A モ\A ホ\A ヌ\A ソ\A コ\A ワ\A ナ\A ヨ\A キ\A モ\A ノ\A ス\A ン\A セ\A 1\A ノ\A ウ\A 7\A ネ\A ト\A ケ\A ン\A セ\A ツ\A ソ\A ユ\A リ\A マ\A ヌ\A ミ\A 7\A ニ\A イ\A ワ\A ソ\A ナ\A ツ\A フ\A オ";
+  animation-duration: 11s;
+  animation-delay: -2.2s;
+  background-position: 0 -4em;
+}
+.rain span:nth-child(11)::before {
+  content: "ム\A ウ\A ハ\A モ\A ク\A キ\A 0\A メ\A メ\A ノ\A オ\A キ\A 8\A ン\A ヤ\A ハ\A ノ\A ハ\A ヌ\A カ\A ユ\A ア\A ロ\A ツ\A エ\A ネ\A ル\A ナ\A ホ\A ロ\A オ\A ヒ\A ケ\A テ\A タ\A 3\A ヨ\A ノ\A ハ\A 0\A ヨ\A ケ\A マ\A ヒ\A ロ\A ナ\A ウ\A ユ\A コ\A レ\A 3\A キ\A ホ\A ハ\A キ\A ウ\A メ\A ン\A ラ\A ツ\A ル\A 0\A オ\A リ\A ム\A ウ\A ハ\A モ\A ク\A キ\A 0\A メ\A メ\A ノ\A オ\A キ\A 8\A ン\A ヤ\A ハ\A ノ\A ハ\A ヌ\A カ\A ユ\A ア\A ロ\A ツ\A エ\A ネ\A ル\A ナ\A ホ\A ロ\A オ\A ヒ\A ケ\A テ\A タ\A 3\A ヨ\A ノ\A ハ\A 0\A ヨ\A ケ\A マ\A ヒ\A ロ\A ナ\A ウ\A ユ\A コ\A レ\A 3\A キ\A ホ\A ハ\A キ\A ウ\A メ\A ン\A ラ\A ツ\A ル\A 0\A オ\A リ";
+  animation-duration: 14.5s;
+  animation-delay: -5.1s;
+  background-position: 0 -9em;
+}
+.rain span:nth-child(12)::before {
+  content: "ヤ\A ワ\A エ\A テ\A ア\A テ\A ミ\A イ\A セ\A ニ\A ネ\A キ\A イ\A ナ\A ス\A ノ\A ク\A ヒ\A ノ\A レ\A モ\A ナ\A ツ\A ミ\A テ\A ヘ\A ユ\A ク\A ミ\A カ\A ヤ\A 3\A チ\A ソ\A フ\A 0\A ケ\A ノ\A 3\A ア\A ミ\A ロ\A ケ\A ホ\A コ\A ヘ\A ト\A ヨ\A ヒ\A フ\A ム\A 2\A ト\A エ\A ユ\A ク\A ハ\A シ\A レ\A ミ\A イ\A メ\A ル\A ラ\A ヤ\A ワ\A エ\A テ\A ア\A テ\A ミ\A イ\A セ\A ニ\A ネ\A キ\A イ\A ナ\A ス\A ノ\A ク\A ヒ\A ノ\A レ\A モ\A ナ\A ツ\A ミ\A テ\A ヘ\A ユ\A ク\A ミ\A カ\A ヤ\A 3\A チ\A ソ\A フ\A 0\A ケ\A ノ\A 3\A ア\A ミ\A ロ\A ケ\A ホ\A コ\A ヘ\A ト\A ヨ\A ヒ\A フ\A ム\A 2\A ト\A エ\A ユ\A ク\A ハ\A シ\A レ\A ミ\A イ\A メ\A ル\A ラ";
+  animation-duration: 9.5s;
+  animation-delay: -1.3s;
+  background-position: 0 -2em;
+}
+.rain span:nth-child(13)::before {
+  content: "カ\A ア\A ヨ\A ユ\A イ\A ク\A ナ\A ア\A モ\A ニ\A タ\A ノ\A ツ\A ウ\A ヤ\A フ\A サ\A ロ\A タ\A ア\A ワ\A セ\A セ\A ラ\A カ\A リ\A キ\A ス\A ス\A ナ\A ト\A シ\A ト\A 1\A ノ\A ア\A エ\A メ\A ク\A ム\A ツ\A ヌ\A ウ\A ム\A ロ\A エ\A ハ\A ノ\A ヒ\A ア\A チ\A ヌ\A ナ\A ン\A メ\A ハ\A ヒ\A サ\A セ\A ム\A サ\A ニ\A ミ\A コ\A カ\A ア\A ヨ\A ユ\A イ\A ク\A ナ\A ア\A モ\A ニ\A タ\A ノ\A ツ\A ウ\A ヤ\A フ\A サ\A ロ\A タ\A ア\A ワ\A セ\A セ\A ラ\A カ\A リ\A キ\A ス\A ス\A ナ\A ト\A シ\A ト\A 1\A ノ\A ア\A エ\A メ\A ク\A ム\A ツ\A ヌ\A ウ\A ム\A ロ\A エ\A ハ\A ノ\A ヒ\A ア\A チ\A ヌ\A ナ\A ン\A メ\A ハ\A ヒ\A サ\A セ\A ム\A サ\A ニ\A ミ\A コ";
+  animation-duration: 13s;
+  animation-delay: -7.4s;
+  background-position: 0 -7em;
+}
+.rain span:nth-child(14)::before {
+  content: "ネ\A シ\A イ\A ア\A ウ\A オ\A ネ\A ア\A ニ\A ワ\A ヌ\A フ\A タ\A ワ\A フ\A ア\A 3\A ワ\A マ\A コ\A カ\A チ\A イ\A ソ\A ワ\A 9\A マ\A シ\A ヒ\A テ\A イ\A ク\A 2\A レ\A ア\A ヨ\A ン\A カ\A ホ\A ヒ\A ワ\A ニ\A シ\A ヌ\A マ\A ト\A ヌ\A ツ\A イ\A ロ\A メ\A マ\A ロ\A ネ\A レ\A コ\A ネ\A リ\A メ\A ホ\A 1\A エ\A ヌ\A メ\A ネ\A シ\A イ\A ア\A ウ\A オ\A ネ\A ア\A ニ\A ワ\A ヌ\A フ\A タ\A ワ\A フ\A ア\A 3\A ワ\A マ\A コ\A カ\A チ\A イ\A ソ\A ワ\A 9\A マ\A シ\A ヒ\A テ\A イ\A ク\A 2\A レ\A ア\A ヨ\A ン\A カ\A ホ\A ヒ\A ワ\A ニ\A シ\A ヌ\A マ\A ト\A ヌ\A ツ\A イ\A ロ\A メ\A マ\A ロ\A ネ\A レ\A コ\A ネ\A リ\A メ\A ホ\A 1\A エ\A ヌ\A メ";
+  animation-duration: 16.5s;
+  animation-delay: -3.6s;
+  background-position: 0 -11em;
+}
+.rain span:nth-child(15)::before {
+  content: "ヤ\A モ\A モ\A セ\A ラ\A ム\A ヨ\A キ\A ヒ\A ミ\A 9\A キ\A 4\A シ\A ン\A ケ\A ヤ\A ヌ\A ト\A エ\A ン\A サ\A サ\A ル\A リ\A 4\A フ\A モ\A ル\A 5\A チ\A キ\A ラ\A サ\A メ\A ツ\A リ\A ラ\A フ\A ソ\A モ\A ツ\A ヒ\A 8\A ナ\A ル\A ヨ\A セ\A ユ\A 3\A ヒ\A チ\A ヌ\A エ\A ホ\A コ\A フ\A ウ\A コ\A サ\A レ\A ヌ\A ミ\A ラ\A ヤ\A モ\A モ\A セ\A ラ\A ム\A ヨ\A キ\A ヒ\A ミ\A 9\A キ\A 4\A シ\A ン\A ケ\A ヤ\A ヌ\A ト\A エ\A ン\A サ\A サ\A ル\A リ\A 4\A フ\A モ\A ル\A 5\A チ\A キ\A ラ\A サ\A メ\A ツ\A リ\A ラ\A フ\A ソ\A モ\A ツ\A ヒ\A 8\A ナ\A ル\A ヨ\A セ\A ユ\A 3\A ヒ\A チ\A ヌ\A エ\A ホ\A コ\A フ\A ウ\A コ\A サ\A レ\A ヌ\A ミ\A ラ";
+  animation-duration: 10.5s;
+  animation-delay: -6.2s;
+  background-position: 0 -5em;
+}
+.rain span:nth-child(16)::before {
+  content: "ク\A ロ\A コ\A ヨ\A ツ\A ネ\A ネ\A ツ\A キ\A ネ\A ヘ\A ネ\A シ\A オ\A セ\A ノ\A ミ\A エ\A ハ\A コ\A ウ\A ネ\A ム\A ニ\A メ\A メ\A オ\A シ\A ウ\A ヤ\A テ\A ム\A ナ\A ホ\A ア\A ホ\A ナ\A タ\A ニ\A ミ\A カ\A サ\A シ\A ノ\A ト\A ミ\A ヒ\A ハ\A サ\A ネ\A コ\A 9\A ヌ\A ア\A レ\A ノ\A チ\A レ\A フ\A ヤ\A ヌ\A カ\A フ\A モ\A ク\A ロ\A コ\A ヨ\A ツ\A ネ\A ネ\A ツ\A キ\A ネ\A ヘ\A ネ\A シ\A オ\A セ\A ノ\A ミ\A エ\A ハ\A コ\A ウ\A ネ\A ム\A ニ\A メ\A メ\A オ\A シ\A ウ\A ヤ\A テ\A ム\A ナ\A ホ\A ア\A ホ\A ナ\A タ\A ニ\A ミ\A カ\A サ\A シ\A ノ\A ト\A ミ\A ヒ\A ハ\A サ\A ネ\A コ\A 9\A ヌ\A ア\A レ\A ノ\A チ\A レ\A フ\A ヤ\A ヌ\A カ\A フ\A モ";
+  animation-duration: 12.5s;
+  animation-delay: -4.1s;
+  background-position: 0 -13em;
+}
+.rain span:nth-child(17)::before {
+  content: "ヤ\A ヨ\A コ\A 3\A テ\A ヤ\A エ\A ヤ\A ア\A タ\A ロ\A ヒ\A イ\A ヌ\A セ\A マ\A 7\A ロ\A ク\A キ\A セ\A ヘ\A サ\A ヘ\A マ\A ネ\A ナ\A 8\A メ\A ナ\A マ\A コ\A シ\A ル\A ン\A モ\A テ\A エ\A ホ\A ク\A ウ\A ウ\A シ\A カ\A 9\A ヌ\A ル\A マ\A ン\A ヤ\A ヌ\A ネ\A ナ\A ン\A モ\A ル\A ス\A エ\A ミ\A ク\A フ\A ミ\A ア\A メ\A ヤ\A ヨ\A コ\A 3\A テ\A ヤ\A エ\A ヤ\A ア\A タ\A ロ\A ヒ\A イ\A ヌ\A セ\A マ\A 7\A ロ\A ク\A キ\A セ\A ヘ\A サ\A ヘ\A マ\A ネ\A ナ\A 8\A メ\A ナ\A マ\A コ\A シ\A ル\A ン\A モ\A テ\A エ\A ホ\A ク\A ウ\A ウ\A シ\A カ\A 9\A ヌ\A ル\A マ\A ン\A ヤ\A ヌ\A ネ\A ナ\A ン\A モ\A ル\A ス\A エ\A ミ\A ク\A フ\A ミ\A ア\A メ";
+  animation-duration: 8.5s;
+  animation-delay: -0.4s;
+  background-position: 0 0em;
+}
+.rain span:nth-child(18)::before {
+  content: "フ\A ニ\A ミ\A コ\A イ\A キ\A ツ\A イ\A ハ\A ツ\A ノ\A ノ\A ト\A ナ\A ソ\A リ\A ル\A フ\A ヨ\A ロ\A ク\A コ\A シ\A リ\A シ\A ヌ\A セ\A ホ\A カ\A ヌ\A ナ\A ミ\A ソ\A フ\A ハ\A エ\A ク\A オ\A ン\A イ\A チ\A タ\A ツ\A チ\A ヘ\A ミ\A セ\A マ\A テ\A ウ\A エ\A エ\A マ\A モ\A ニ\A ム\A フ\A ン\A ン\A サ\A テ\A サ\A テ\A ミ\A フ\A ニ\A ミ\A コ\A イ\A キ\A ツ\A イ\A ハ\A ツ\A ノ\A ノ\A ト\A ナ\A ソ\A リ\A ル\A フ\A ヨ\A ロ\A ク\A コ\A シ\A リ\A シ\A ヌ\A セ\A ホ\A カ\A ヌ\A ナ\A ミ\A ソ\A フ\A ハ\A エ\A ク\A オ\A ン\A イ\A チ\A タ\A ツ\A チ\A ヘ\A ミ\A セ\A マ\A テ\A ウ\A エ\A エ\A マ\A モ\A ニ\A ム\A フ\A ン\A ン\A サ\A テ\A サ\A テ\A ミ";
+  animation-duration: 11s;
+  animation-delay: -2.2s;
+  background-position: 0 -4em;
+}
+.rain span:nth-child(19)::before {
+  content: "ユ\A ク\A ハ\A ミ\A メ\A メ\A ク\A 2\A ミ\A メ\A ホ\A ア\A ケ\A ム\A シ\A チ\A レ\A フ\A リ\A ノ\A タ\A ヤ\A ワ\A ヒ\A ハ\A イ\A マ\A ネ\A ミ\A イ\A ヌ\A レ\A ム\A リ\A ユ\A モ\A フ\A フ\A カ\A ア\A ヘ\A ミ\A チ\A ヌ\A ル\A ヘ\A ツ\A ス\A ヒ\A ス\A シ\A ニ\A ケ\A ケ\A 3\A フ\A ヒ\A コ\A ヒ\A メ\A ノ\A ム\A タ\A イ\A ユ\A ク\A ハ\A ミ\A メ\A メ\A ク\A 2\A ミ\A メ\A ホ\A ア\A ケ\A ム\A シ\A チ\A レ\A フ\A リ\A ノ\A タ\A ヤ\A ワ\A ヒ\A ハ\A イ\A マ\A ネ\A ミ\A イ\A ヌ\A レ\A ム\A リ\A ユ\A モ\A フ\A フ\A カ\A ア\A ヘ\A ミ\A チ\A ヌ\A ル\A ヘ\A ツ\A ス\A ヒ\A ス\A シ\A ニ\A ケ\A ケ\A 3\A フ\A ヒ\A コ\A ヒ\A メ\A ノ\A ム\A タ\A イ";
+  animation-duration: 14.5s;
+  animation-delay: -5.1s;
+  background-position: 0 -9em;
+}
+.rain span:nth-child(20)::before {
+  content: "テ\A ユ\A イ\A オ\A ミ\A リ\A エ\A ヘ\A ヨ\A シ\A ハ\A カ\A ヒ\A ン\A ネ\A イ\A カ\A ス\A ン\A ノ\A チ\A チ\A ミ\A ヒ\A ク\A 2\A ナ\A レ\A ヌ\A ソ\A ル\A ネ\A セ\A ヨ\A カ\A ク\A レ\A ク\A フ\A ム\A ハ\A タ\A セ\A ロ\A ヨ\A ン\A ハ\A 5\A ク\A タ\A ス\A ク\A ラ\A テ\A ケ\A ユ\A ス\A メ\A ス\A ネ\A ヘ\A サ\A ソ\A 9\A テ\A ユ\A イ\A オ\A ミ\A リ\A エ\A ヘ\A ヨ\A シ\A ハ\A カ\A ヒ\A ン\A ネ\A イ\A カ\A ス\A ン\A ノ\A チ\A チ\A ミ\A ヒ\A ク\A 2\A ナ\A レ\A ヌ\A ソ\A ル\A ネ\A セ\A ヨ\A カ\A ク\A レ\A ク\A フ\A ム\A ハ\A タ\A セ\A ロ\A ヨ\A ン\A ハ\A 5\A ク\A タ\A ス\A ク\A ラ\A テ\A ケ\A ユ\A ス\A メ\A ス\A ネ\A ヘ\A サ\A ソ\A 9";
+  animation-duration: 9.5s;
+  animation-delay: -1.3s;
+  background-position: 0 -2em;
+}
+.rain span:nth-child(21)::before {
+  content: "メ\A ケ\A ワ\A ロ\A ミ\A ロ\A ヤ\A チ\A ミ\A ル\A レ\A サ\A ク\A ソ\A カ\A コ\A テ\A タ\A ム\A ユ\A ラ\A ハ\A ル\A フ\A モ\A ヘ\A ホ\A ヌ\A ツ\A サ\A ハ\A ン\A 1\A カ\A メ\A リ\A チ\A キ\A シ\A ト\A タ\A ウ\A ホ\A シ\A エ\A ホ\A 3\A ハ\A サ\A ウ\A ロ\A ミ\A ヘ\A オ\A ネ\A ヒ\A ソ\A ヨ\A セ\A ニ\A ユ\A ネ\A サ\A ユ\A メ\A ケ\A ワ\A ロ\A ミ\A ロ\A ヤ\A チ\A ミ\A ル\A レ\A サ\A ク\A ソ\A カ\A コ\A テ\A タ\A ム\A ユ\A ラ\A ハ\A ル\A フ\A モ\A ヘ\A ホ\A ヌ\A ツ\A サ\A ハ\A ン\A 1\A カ\A メ\A リ\A チ\A キ\A シ\A ト\A タ\A ウ\A ホ\A シ\A エ\A ホ\A 3\A ハ\A サ\A ウ\A ロ\A ミ\A ヘ\A オ\A ネ\A ヒ\A ソ\A ヨ\A セ\A ニ\A ユ\A ネ\A サ\A ユ";
+  animation-duration: 13s;
+  animation-delay: -7.4s;
+  background-position: 0 -7em;
+}
+.rain span:nth-child(22)::before {
+  content: "サ\A ヘ\A ホ\A ニ\A ヒ\A ウ\A ミ\A ホ\A ホ\A ス\A ツ\A コ\A エ\A ヘ\A ソ\A コ\A ン\A セ\A タ\A 4\A サ\A タ\A ム\A サ\A ア\A タ\A サ\A ユ\A ウ\A タ\A オ\A リ\A ヘ\A ハ\A 1\A ハ\A ヨ\A ヘ\A ナ\A ヌ\A エ\A コ\A ヌ\A ヨ\A ミ\A ホ\A セ\A イ\A イ\A ツ\A モ\A 5\A ム\A ケ\A ニ\A ク\A ン\A チ\A ユ\A ワ\A メ\A メ\A ク\A セ\A サ\A ヘ\A ホ\A ニ\A ヒ\A ウ\A ミ\A ホ\A ホ\A ス\A ツ\A コ\A エ\A ヘ\A ソ\A コ\A ン\A セ\A タ\A 4\A サ\A タ\A ム\A サ\A ア\A タ\A サ\A ユ\A ウ\A タ\A オ\A リ\A ヘ\A ハ\A 1\A ハ\A ヨ\A ヘ\A ナ\A ヌ\A エ\A コ\A ヌ\A ヨ\A ミ\A ホ\A セ\A イ\A イ\A ツ\A モ\A 5\A ム\A ケ\A ニ\A ク\A ン\A チ\A ユ\A ワ\A メ\A メ\A ク\A セ";
+  animation-duration: 16.5s;
+  animation-delay: -3.6s;
+  background-position: 0 -11em;
+}
+.rain span:nth-child(23)::before {
+  content: "ミ\A ム\A ル\A コ\A エ\A ヨ\A ヤ\A リ\A ム\A フ\A ヤ\A メ\A レ\A ヨ\A テ\A ケ\A モ\A カ\A ス\A ル\A カ\A ワ\A オ\A コ\A リ\A ア\A ハ\A モ\A イ\A オ\A 5\A サ\A ン\A ロ\A ハ\A コ\A ス\A ウ\A ヌ\A ヒ\A ユ\A ル\A 2\A モ\A セ\A ワ\A ラ\A ヌ\A ラ\A ト\A ウ\A セ\A サ\A ナ\A タ\A ハ\A レ\A ト\A ホ\A コ\A ノ\A レ\A メ\A ル\A ミ\A ム\A ル\A コ\A エ\A ヨ\A ヤ\A リ\A ム\A フ\A ヤ\A メ\A レ\A ヨ\A テ\A ケ\A モ\A カ\A ス\A ル\A カ\A ワ\A オ\A コ\A リ\A ア\A ハ\A モ\A イ\A オ\A 5\A サ\A ン\A ロ\A ハ\A コ\A ス\A ウ\A ヌ\A ヒ\A ユ\A ル\A 2\A モ\A セ\A ワ\A ラ\A ヌ\A ラ\A ト\A ウ\A セ\A サ\A ナ\A タ\A ハ\A レ\A ト\A ホ\A コ\A ノ\A レ\A メ\A ル";
+  animation-duration: 10.5s;
+  animation-delay: -6.2s;
+  background-position: 0 -5em;
+}
+.rain span:nth-child(24)::before {
+  content: "タ\A カ\A キ\A 0\A ミ\A ラ\A カ\A ホ\A ト\A メ\A サ\A フ\A 3\A ネ\A ヘ\A ニ\A 9\A マ\A ホ\A ウ\A ツ\A サ\A ヒ\A ヤ\A ミ\A ユ\A コ\A エ\A ラ\A レ\A テ\A 9\A キ\A ス\A ル\A カ\A テ\A セ\A メ\A テ\A ナ\A ラ\A ソ\A ヤ\A ロ\A ハ\A ト\A ク\A ヌ\A ホ\A ル\A ハ\A ワ\A ネ\A ル\A ヒ\A サ\A ヒ\A ノ\A 0\A ソ\A ス\A ミ\A ナ\A タ\A カ\A キ\A 0\A ミ\A ラ\A カ\A ホ\A ト\A メ\A サ\A フ\A 3\A ネ\A ヘ\A ニ\A 9\A マ\A ホ\A ウ\A ツ\A サ\A ヒ\A ヤ\A ミ\A ユ\A コ\A エ\A ラ\A レ\A テ\A 9\A キ\A ス\A ル\A カ\A テ\A セ\A メ\A テ\A ナ\A ラ\A ソ\A ヤ\A ロ\A ハ\A ト\A ク\A ヌ\A ホ\A ル\A ハ\A ワ\A ネ\A ル\A ヒ\A サ\A ヒ\A ノ\A 0\A ソ\A ス\A ミ\A ナ";
+  animation-duration: 12.5s;
+  animation-delay: -4.1s;
+  background-position: 0 -13em;
+}
+.rain span:nth-child(25)::before {
+  content: "ウ\A イ\A ノ\A ケ\A イ\A ハ\A モ\A ム\A ヘ\A コ\A ム\A ツ\A ユ\A ロ\A ム\A レ\A ネ\A レ\A シ\A ク\A ワ\A テ\A ロ\A ロ\A オ\A サ\A タ\A ヘ\A オ\A ク\A ト\A サ\A ヤ\A ヨ\A フ\A ホ\A ヒ\A ヤ\A ク\A マ\A フ\A ニ\A フ\A ユ\A シ\A ツ\A レ\A ラ\A イ\A イ\A キ\A ン\A ヘ\A ヘ\A ニ\A ヒ\A カ\A ル\A ツ\A ト\A ク\A ツ\A マ\A ネ\A ウ\A イ\A ノ\A ケ\A イ\A ハ\A モ\A ム\A ヘ\A コ\A ム\A ツ\A ユ\A ロ\A ム\A レ\A ネ\A レ\A シ\A ク\A ワ\A テ\A ロ\A ロ\A オ\A サ\A タ\A ヘ\A オ\A ク\A ト\A サ\A ヤ\A ヨ\A フ\A ホ\A ヒ\A ヤ\A ク\A マ\A フ\A ニ\A フ\A ユ\A シ\A ツ\A レ\A ラ\A イ\A イ\A キ\A ン\A ヘ\A ヘ\A ニ\A ヒ\A カ\A ル\A ツ\A ト\A ク\A ツ\A マ\A ネ";
+  animation-duration: 8.5s;
+  animation-delay: -0.4s;
+  background-position: 0 0em;
+}
+.rain span:nth-child(26)::before {
+  content: "ヤ\A セ\A ケ\A テ\A エ\A ユ\A ム\A ン\A ム\A ム\A 0\A ホ\A ク\A ア\A エ\A タ\A ナ\A ツ\A ン\A シ\A ヤ\A ハ\A ケ\A メ\A ハ\A レ\A ニ\A ユ\A ツ\A ク\A 2\A ミ\A ノ\A タ\A ホ\A シ\A ウ\A セ\A ツ\A マ\A コ\A ソ\A ラ\A ヨ\A フ\A ロ\A ン\A ン\A ノ\A チ\A シ\A リ\A テ\A ワ\A ワ\A 3\A レ\A ハ\A ノ\A ユ\A ユ\A 3\A コ\A リ\A ヤ\A セ\A ケ\A テ\A エ\A ユ\A ム\A ン\A ム\A ム\A 0\A ホ\A ク\A ア\A エ\A タ\A ナ\A ツ\A ン\A シ\A ヤ\A ハ\A ケ\A メ\A ハ\A レ\A ニ\A ユ\A ツ\A ク\A 2\A ミ\A ノ\A タ\A ホ\A シ\A ウ\A セ\A ツ\A マ\A コ\A ソ\A ラ\A ヨ\A フ\A ロ\A ン\A ン\A ノ\A チ\A シ\A リ\A テ\A ワ\A ワ\A 3\A レ\A ハ\A ノ\A ユ\A ユ\A 3\A コ\A リ";
+  animation-duration: 11s;
+  animation-delay: -2.2s;
+  background-position: 0 -4em;
+}
+.rain span:nth-child(27)::before {
+  content: "セ\A イ\A キ\A ム\A ソ\A カ\A レ\A オ\A ヌ\A カ\A ミ\A ヒ\A ユ\A モ\A セ\A シ\A ソ\A レ\A ミ\A ツ\A ク\A フ\A キ\A 2\A セ\A ニ\A モ\A ク\A イ\A ヤ\A マ\A ワ\A レ\A テ\A ミ\A テ\A ノ\A ス\A ミ\A ミ\A エ\A ニ\A ム\A シ\A フ\A ヒ\A ソ\A ヨ\A ヘ\A ク\A ア\A ウ\A リ\A ヘ\A チ\A ケ\A ル\A カ\A イ\A ヤ\A メ\A ソ\A ノ\A サ\A セ\A イ\A キ\A ム\A ソ\A カ\A レ\A オ\A ヌ\A カ\A ミ\A ヒ\A ユ\A モ\A セ\A シ\A ソ\A レ\A ミ\A ツ\A ク\A フ\A キ\A 2\A セ\A ニ\A モ\A ク\A イ\A ヤ\A マ\A ワ\A レ\A テ\A ミ\A テ\A ノ\A ス\A ミ\A ミ\A エ\A ニ\A ム\A シ\A フ\A ヒ\A ソ\A ヨ\A ヘ\A ク\A ア\A ウ\A リ\A ヘ\A チ\A ケ\A ル\A カ\A イ\A ヤ\A メ\A ソ\A ノ\A サ";
+  animation-duration: 14.5s;
+  animation-delay: -5.1s;
+  background-position: 0 -9em;
+}
+.rain span:nth-child(28)::before {
+  content: "ウ\A ス\A ハ\A ヘ\A メ\A ラ\A ウ\A ニ\A メ\A ワ\A ニ\A セ\A ホ\A ル\A ユ\A ウ\A 1\A コ\A ム\A ホ\A マ\A ハ\A ハ\A ト\A ス\A フ\A ヒ\A ネ\A ト\A メ\A ク\A セ\A ノ\A ホ\A コ\A ム\A ニ\A ケ\A 1\A メ\A メ\A ハ\A ロ\A ケ\A モ\A サ\A サ\A キ\A フ\A ウ\A オ\A ウ\A ニ\A ユ\A ヤ\A ヌ\A ア\A ノ\A ヒ\A ヒ\A オ\A サ\A セ\A シ\A ウ\A ス\A ハ\A ヘ\A メ\A ラ\A ウ\A ニ\A メ\A ワ\A ニ\A セ\A ホ\A ル\A ユ\A ウ\A 1\A コ\A ム\A ホ\A マ\A ハ\A ハ\A ト\A ス\A フ\A ヒ\A ネ\A ト\A メ\A ク\A セ\A ノ\A ホ\A コ\A ム\A ニ\A ケ\A 1\A メ\A メ\A ハ\A ロ\A ケ\A モ\A サ\A サ\A キ\A フ\A ウ\A オ\A ウ\A ニ\A ユ\A ヤ\A ヌ\A ア\A ノ\A ヒ\A ヒ\A オ\A サ\A セ\A シ";
+  animation-duration: 9.5s;
+  animation-delay: -1.3s;
+  background-position: 0 -2em;
+}
+.rain span:nth-child(29)::before {
+  content: "メ\A チ\A ハ\A タ\A ミ\A ナ\A ホ\A フ\A キ\A モ\A ケ\A サ\A ノ\A ウ\A マ\A ノ\A イ\A モ\A ト\A カ\A ハ\A カ\A ソ\A ラ\A ネ\A ア\A ル\A メ\A モ\A イ\A 5\A ル\A ム\A ア\A ツ\A サ\A ユ\A ヤ\A ム\A ン\A イ\A 8\A チ\A ワ\A マ\A イ\A レ\A メ\A ウ\A メ\A イ\A ヨ\A キ\A ヨ\A テ\A ハ\A 9\A ウ\A 5\A レ\A テ\A エ\A ホ\A ハ\A メ\A チ\A ハ\A タ\A ミ\A ナ\A ホ\A フ\A キ\A モ\A ケ\A サ\A ノ\A ウ\A マ\A ノ\A イ\A モ\A ト\A カ\A ハ\A カ\A ソ\A ラ\A ネ\A ア\A ル\A メ\A モ\A イ\A 5\A ル\A ム\A ア\A ツ\A サ\A ユ\A ヤ\A ム\A ン\A イ\A 8\A チ\A ワ\A マ\A イ\A レ\A メ\A ウ\A メ\A イ\A ヨ\A キ\A ヨ\A テ\A ハ\A 9\A ウ\A 5\A レ\A テ\A エ\A ホ\A ハ";
+  animation-duration: 13s;
+  animation-delay: -7.4s;
+  background-position: 0 -7em;
+}
+.rain span:nth-child(30)::before {
+  content: "チ\A イ\A ク\A ハ\A ハ\A テ\A セ\A ミ\A ニ\A コ\A ア\A チ\A リ\A ニ\A リ\A ク\A リ\A 4\A ロ\A 8\A マ\A コ\A ソ\A ス\A ホ\A ヘ\A マ\A ヌ\A レ\A ニ\A ユ\A ア\A ヒ\A マ\A セ\A ニ\A カ\A 1\A 1\A ヌ\A 2\A ホ\A ケ\A ン\A ネ\A メ\A ハ\A フ\A ナ\A ケ\A ヨ\A ム\A チ\A エ\A シ\A ワ\A ア\A エ\A エ\A ヌ\A ノ\A リ\A コ\A セ\A チ\A イ\A ク\A ハ\A ハ\A テ\A セ\A ミ\A ニ\A コ\A ア\A チ\A リ\A ニ\A リ\A ク\A リ\A 4\A ロ\A 8\A マ\A コ\A ソ\A ス\A ホ\A ヘ\A マ\A ヌ\A レ\A ニ\A ユ\A ア\A ヒ\A マ\A セ\A ニ\A カ\A 1\A 1\A ヌ\A 2\A ホ\A ケ\A ン\A ネ\A メ\A ハ\A フ\A ナ\A ケ\A ヨ\A ム\A チ\A エ\A シ\A ワ\A ア\A エ\A エ\A ヌ\A ノ\A リ\A コ\A セ";
+  animation-duration: 16.5s;
+  animation-delay: -3.6s;
+  background-position: 0 -11em;
+}
+.rain span:nth-child(31)::before {
+  content: "フ\A ニ\A ン\A セ\A ソ\A オ\A ラ\A ミ\A モ\A オ\A マ\A ミ\A タ\A ハ\A レ\A 0\A ヨ\A 3\A セ\A 7\A コ\A タ\A ク\A シ\A ホ\A マ\A ス\A ロ\A ヤ\A サ\A ハ\A メ\A テ\A ナ\A サ\A ヒ\A ニ\A ワ\A ホ\A 1\A ク\A 7\A ヘ\A コ\A 5\A ル\A ナ\A ク\A ミ\A ム\A ニ\A ヌ\A コ\A ワ\A リ\A テ\A ヒ\A コ\A ン\A ホ\A ウ\A ニ\A ノ\A ハ\A フ\A ニ\A ン\A セ\A ソ\A オ\A ラ\A ミ\A モ\A オ\A マ\A ミ\A タ\A ハ\A レ\A 0\A ヨ\A 3\A セ\A 7\A コ\A タ\A ク\A シ\A ホ\A マ\A ス\A ロ\A ヤ\A サ\A ハ\A メ\A テ\A ナ\A サ\A ヒ\A ニ\A ワ\A ホ\A 1\A ク\A 7\A ヘ\A コ\A 5\A ル\A ナ\A ク\A ミ\A ム\A ニ\A ヌ\A コ\A ワ\A リ\A テ\A ヒ\A コ\A ン\A ホ\A ウ\A ニ\A ノ\A ハ";
+  animation-duration: 10.5s;
+  animation-delay: -6.2s;
+  background-position: 0 -5em;
+}
+.rain span:nth-child(32)::before {
+  content: "キ\A ル\A カ\A ホ\A 5\A モ\A 0\A 1\A マ\A タ\A カ\A ユ\A ユ\A ト\A ラ\A レ\A ヤ\A ワ\A ハ\A モ\A チ\A ヌ\A ア\A キ\A テ\A コ\A メ\A フ\A キ\A ミ\A ツ\A ネ\A ユ\A ト\A ナ\A ム\A ノ\A ン\A ネ\A ワ\A モ\A セ\A タ\A ヤ\A セ\A 2\A エ\A メ\A ラ\A リ\A ン\A ム\A ル\A ス\A ウ\A リ\A ネ\A ネ\A ハ\A マ\A ヌ\A ト\A ツ\A ユ\A キ\A ル\A カ\A ホ\A 5\A モ\A 0\A 1\A マ\A タ\A カ\A ユ\A ユ\A ト\A ラ\A レ\A ヤ\A ワ\A ハ\A モ\A チ\A ヌ\A ア\A キ\A テ\A コ\A メ\A フ\A キ\A ミ\A ツ\A ネ\A ユ\A ト\A ナ\A ム\A ノ\A ン\A ネ\A ワ\A モ\A セ\A タ\A ヤ\A セ\A 2\A エ\A メ\A ラ\A リ\A ン\A ム\A ル\A ス\A ウ\A リ\A ネ\A ネ\A ハ\A マ\A ヌ\A ト\A ツ\A ユ";
+  animation-duration: 12.5s;
+  animation-delay: -4.1s;
+  background-position: 0 -13em;
+}
+.rain span:nth-child(33)::before {
+  content: "ハ\A モ\A メ\A メ\A ラ\A サ\A ミ\A ヒ\A ロ\A ン\A 2\A ユ\A ク\A ヒ\A 3\A ロ\A ロ\A ワ\A 7\A イ\A ム\A リ\A ム\A エ\A ヨ\A ミ\A ホ\A ホ\A ム\A ン\A 9\A モ\A ス\A レ\A ノ\A シ\A ル\A 4\A ノ\A ン\A ホ\A ク\A キ\A チ\A キ\A サ\A ト\A ニ\A マ\A イ\A ソ\A ト\A マ\A ホ\A セ\A ネ\A ソ\A ニ\A ラ\A ヘ\A ノ\A タ\A オ\A ル\A ハ\A モ\A メ\A メ\A ラ\A サ\A ミ\A ヒ\A ロ\A ン\A 2\A ユ\A ク\A ヒ\A 3\A ロ\A ロ\A ワ\A 7\A イ\A ム\A リ\A ム\A エ\A ヨ\A ミ\A ホ\A ホ\A ム\A ン\A 9\A モ\A ス\A レ\A ノ\A シ\A ル\A 4\A ノ\A ン\A ホ\A ク\A キ\A チ\A キ\A サ\A ト\A ニ\A マ\A イ\A ソ\A ト\A マ\A ホ\A セ\A ネ\A ソ\A ニ\A ラ\A ヘ\A ノ\A タ\A オ\A ル";
+  animation-duration: 8.5s;
+  animation-delay: -0.4s;
+  background-position: 0 0em;
+}
+.rain span:nth-child(34)::before {
+  content: "カ\A カ\A ケ\A リ\A オ\A オ\A マ\A ニ\A ア\A 4\A キ\A テ\A オ\A コ\A 5\A ウ\A カ\A コ\A メ\A ク\A ワ\A カ\A レ\A モ\A チ\A ア\A ト\A エ\A マ\A ウ\A ニ\A サ\A ウ\A ム\A ネ\A ヤ\A ナ\A ミ\A セ\A オ\A ソ\A エ\A イ\A タ\A ツ\A ナ\A ラ\A ホ\A ワ\A ノ\A エ\A テ\A 0\A ト\A ム\A ル\A 5\A ト\A カ\A サ\A 1\A ト\A ヨ\A タ\A カ\A カ\A ケ\A リ\A オ\A オ\A マ\A ニ\A ア\A 4\A キ\A テ\A オ\A コ\A 5\A ウ\A カ\A コ\A メ\A ク\A ワ\A カ\A レ\A モ\A チ\A ア\A ト\A エ\A マ\A ウ\A ニ\A サ\A ウ\A ム\A ネ\A ヤ\A ナ\A ミ\A セ\A オ\A ソ\A エ\A イ\A タ\A ツ\A ナ\A ラ\A ホ\A ワ\A ノ\A エ\A テ\A 0\A ト\A ム\A ル\A 5\A ト\A カ\A サ\A 1\A ト\A ヨ\A タ";
+  animation-duration: 11s;
+  animation-delay: -2.2s;
+  background-position: 0 -4em;
+}
+.rain span:nth-child(35)::before {
+  content: "キ\A ラ\A シ\A ア\A ヒ\A ヌ\A ミ\A ス\A モ\A ン\A ヘ\A ヌ\A カ\A オ\A ヨ\A タ\A チ\A ノ\A マ\A コ\A メ\A 5\A ウ\A ア\A ホ\A ネ\A ラ\A ハ\A ク\A フ\A ケ\A イ\A ヨ\A レ\A チ\A フ\A 8\A サ\A 8\A ラ\A ク\A ク\A ノ\A モ\A ノ\A ノ\A ネ\A ヒ\A セ\A ニ\A ノ\A テ\A エ\A フ\A ミ\A マ\A ケ\A ス\A メ\A メ\A テ\A マ\A フ\A ヌ\A キ\A ラ\A シ\A ア\A ヒ\A ヌ\A ミ\A ス\A モ\A ン\A ヘ\A ヌ\A カ\A オ\A ヨ\A タ\A チ\A ノ\A マ\A コ\A メ\A 5\A ウ\A ア\A ホ\A ネ\A ラ\A ハ\A ク\A フ\A ケ\A イ\A ヨ\A レ\A チ\A フ\A 8\A サ\A 8\A ラ\A ク\A ク\A ノ\A モ\A ノ\A ノ\A ネ\A ヒ\A セ\A ニ\A ノ\A テ\A エ\A フ\A ミ\A マ\A ケ\A ス\A メ\A メ\A テ\A マ\A フ\A ヌ";
+  animation-duration: 14.5s;
+  animation-delay: -5.1s;
+  background-position: 0 -9em;
+}
+.rain span:nth-child(36)::before {
+  content: "ミ\A セ\A チ\A コ\A ワ\A ム\A ワ\A ヤ\A シ\A ワ\A ニ\A モ\A ミ\A サ\A マ\A ヨ\A ナ\A シ\A マ\A ル\A エ\A フ\A ウ\A ヒ\A ハ\A イ\A レ\A ヤ\A メ\A セ\A サ\A レ\A カ\A ラ\A ナ\A コ\A ネ\A メ\A ノ\A ヤ\A ヤ\A エ\A サ\A ホ\A コ\A ン\A ン\A サ\A ネ\A ナ\A ク\A ラ\A ト\A ン\A フ\A ヒ\A ユ\A ウ\A ン\A ン\A ン\A ヨ\A キ\A ン\A ミ\A セ\A チ\A コ\A ワ\A ム\A ワ\A ヤ\A シ\A ワ\A ニ\A モ\A ミ\A サ\A マ\A ヨ\A ナ\A シ\A マ\A ル\A エ\A フ\A ウ\A ヒ\A ハ\A イ\A レ\A ヤ\A メ\A セ\A サ\A レ\A カ\A ラ\A ナ\A コ\A ネ\A メ\A ノ\A ヤ\A ヤ\A エ\A サ\A ホ\A コ\A ン\A ン\A サ\A ネ\A ナ\A ク\A ラ\A ト\A ン\A フ\A ヒ\A ユ\A ウ\A ン\A ン\A ン\A ヨ\A キ\A ン";
+  animation-duration: 9.5s;
+  animation-delay: -1.3s;
+  background-position: 0 -2em;
+}
+.rain span:nth-child(37)::before {
+  content: "ル\A キ\A タ\A ツ\A ア\A ヌ\A ハ\A ケ\A ヤ\A タ\A ロ\A ナ\A フ\A レ\A セ\A ラ\A ル\A ユ\A ホ\A ナ\A タ\A ワ\A イ\A 9\A マ\A サ\A ケ\A チ\A ホ\A シ\A ラ\A ヒ\A エ\A ウ\A ナ\A ノ\A ウ\A レ\A ヒ\A チ\A マ\A ニ\A 7\A ラ\A リ\A キ\A ネ\A シ\A ラ\A ル\A ウ\A ロ\A チ\A ス\A ト\A ケ\A ト\A ホ\A コ\A ヨ\A ハ\A ネ\A イ\A レ\A ル\A キ\A タ\A ツ\A ア\A ヌ\A ハ\A ケ\A ヤ\A タ\A ロ\A ナ\A フ\A レ\A セ\A ラ\A ル\A ユ\A ホ\A ナ\A タ\A ワ\A イ\A 9\A マ\A サ\A ケ\A チ\A ホ\A シ\A ラ\A ヒ\A エ\A ウ\A ナ\A ノ\A ウ\A レ\A ヒ\A チ\A マ\A ニ\A 7\A ラ\A リ\A キ\A ネ\A シ\A ラ\A ル\A ウ\A ロ\A チ\A ス\A ト\A ケ\A ト\A ホ\A コ\A ヨ\A ハ\A ネ\A イ\A レ";
+  animation-duration: 13s;
+  animation-delay: -7.4s;
+  background-position: 0 -7em;
+}
+.rain span:nth-child(38)::before {
+  content: "タ\A ヌ\A チ\A オ\A ネ\A ノ\A イ\A ケ\A ホ\A テ\A チ\A チ\A ヤ\A コ\A ユ\A 5\A ト\A メ\A ス\A タ\A キ\A ム\A チ\A タ\A ム\A ヘ\A ヤ\A ソ\A ワ\A ヌ\A ユ\A ソ\A テ\A ヒ\A ロ\A ネ\A ク\A ア\A ヤ\A 8\A 4\A ホ\A ア\A コ\A イ\A ツ\A コ\A リ\A ス\A ム\A タ\A 8\A コ\A ノ\A モ\A ミ\A サ\A ケ\A ツ\A ニ\A ヘ\A ノ\A タ\A エ\A タ\A ヌ\A チ\A オ\A ネ\A ノ\A イ\A ケ\A ホ\A テ\A チ\A チ\A ヤ\A コ\A ユ\A 5\A ト\A メ\A ス\A タ\A キ\A ム\A チ\A タ\A ム\A ヘ\A ヤ\A ソ\A ワ\A ヌ\A ユ\A ソ\A テ\A ヒ\A ロ\A ネ\A ク\A ア\A ヤ\A 8\A 4\A ホ\A ア\A コ\A イ\A ツ\A コ\A リ\A ス\A ム\A タ\A 8\A コ\A ノ\A モ\A ミ\A サ\A ケ\A ツ\A ニ\A ヘ\A ノ\A タ\A エ";
+  animation-duration: 16.5s;
+  animation-delay: -3.6s;
+  background-position: 0 -11em;
+}
+.rain span:nth-child(39)::before {
+  content: "ヒ\A リ\A サ\A タ\A セ\A ツ\A レ\A ウ\A ノ\A シ\A モ\A シ\A ノ\A 4\A ハ\A ヌ\A チ\A ヨ\A ヨ\A モ\A マ\A シ\A ケ\A ク\A 5\A 5\A エ\A ン\A ミ\A ケ\A ヨ\A ケ\A ト\A ヒ\A ワ\A メ\A ヨ\A タ\A モ\A ク\A ソ\A レ\A ウ\A ニ\A メ\A ラ\A ケ\A ケ\A ン\A ヤ\A ヒ\A ネ\A ノ\A カ\A ホ\A カ\A ト\A コ\A メ\A ウ\A エ\A 2\A カ\A 1\A ヒ\A リ\A サ\A タ\A セ\A ツ\A レ\A ウ\A ノ\A シ\A モ\A シ\A ノ\A 4\A ハ\A ヌ\A チ\A ヨ\A ヨ\A モ\A マ\A シ\A ケ\A ク\A 5\A 5\A エ\A ン\A ミ\A ケ\A ヨ\A ケ\A ト\A ヒ\A ワ\A メ\A ヨ\A タ\A モ\A ク\A ソ\A レ\A ウ\A ニ\A メ\A ラ\A ケ\A ケ\A ン\A ヤ\A ヒ\A ネ\A ノ\A カ\A ホ\A カ\A ト\A コ\A メ\A ウ\A エ\A 2\A カ\A 1";
+  animation-duration: 10.5s;
+  animation-delay: -6.2s;
+  background-position: 0 -5em;
+}
+.rain span:nth-child(40)::before {
+  content: "ノ\A ラ\A レ\A タ\A ユ\A イ\A ラ\A ミ\A ン\A ル\A ノ\A ノ\A ホ\A テ\A エ\A ム\A チ\A ユ\A 2\A チ\A ホ\A メ\A ミ\A ネ\A ラ\A ヤ\A キ\A ノ\A ト\A ヘ\A ヤ\A タ\A テ\A ワ\A 5\A ハ\A ノ\A テ\A ミ\A ク\A タ\A ミ\A フ\A 0\A ソ\A ネ\A ヤ\A ケ\A リ\A サ\A フ\A カ\A カ\A ハ\A コ\A マ\A レ\A リ\A ナ\A ク\A テ\A ヘ\A ヨ\A 4\A ノ\A ラ\A レ\A タ\A ユ\A イ\A ラ\A ミ\A ン\A ル\A ノ\A ノ\A ホ\A テ\A エ\A ム\A チ\A ユ\A 2\A チ\A ホ\A メ\A ミ\A ネ\A ラ\A ヤ\A キ\A ノ\A ト\A ヘ\A ヤ\A タ\A テ\A ワ\A 5\A ハ\A ノ\A テ\A ミ\A ク\A タ\A ミ\A フ\A 0\A ソ\A ネ\A ヤ\A ケ\A リ\A サ\A フ\A カ\A カ\A ハ\A コ\A マ\A レ\A リ\A ナ\A ク\A テ\A ヘ\A ヨ\A 4";
+  animation-duration: 12.5s;
+  animation-delay: -4.1s;
+  background-position: 0 -13em;
+}
+.rain span:nth-child(41)::before {
+  content: "マ\A リ\A テ\A ソ\A キ\A ラ\A フ\A ヨ\A 1\A ホ\A ヨ\A ナ\A カ\A マ\A ハ\A ナ\A ウ\A テ\A リ\A ク\A ネ\A ト\A ヘ\A ス\A ン\A ノ\A ホ\A モ\A イ\A レ\A ヤ\A モ\A ワ\A テ\A ア\A ユ\A ミ\A ヘ\A ツ\A ノ\A ア\A コ\A ル\A ヘ\A チ\A ヤ\A オ\A ル\A ム\A カ\A ク\A ワ\A ニ\A メ\A ラ\A リ\A イ\A テ\A ラ\A チ\A ノ\A ク\A セ\A フ\A マ\A リ\A テ\A ソ\A キ\A ラ\A フ\A ヨ\A 1\A ホ\A ヨ\A ナ\A カ\A マ\A ハ\A ナ\A ウ\A テ\A リ\A ク\A ネ\A ト\A ヘ\A ス\A ン\A ノ\A ホ\A モ\A イ\A レ\A ヤ\A モ\A ワ\A テ\A ア\A ユ\A ミ\A ヘ\A ツ\A ノ\A ア\A コ\A ル\A ヘ\A チ\A ヤ\A オ\A ル\A ム\A カ\A ク\A ワ\A ニ\A メ\A ラ\A リ\A イ\A テ\A ラ\A チ\A ノ\A ク\A セ\A フ";
+  animation-duration: 8.5s;
+  animation-delay: -0.4s;
+  background-position: 0 0em;
+}
+.rain span:nth-child(42)::before {
+  content: "ス\A ン\A 3\A フ\A サ\A ン\A ハ\A ヌ\A ロ\A ユ\A ネ\A ン\A ノ\A ム\A モ\A カ\A マ\A ユ\A レ\A モ\A ホ\A メ\A ス\A セ\A ツ\A テ\A ル\A ケ\A ハ\A ロ\A オ\A リ\A ノ\A リ\A ソ\A 0\A リ\A ウ\A オ\A フ\A チ\A ヨ\A レ\A セ\A テ\A ロ\A ヒ\A サ\A ワ\A コ\A オ\A ナ\A ケ\A キ\A キ\A キ\A ル\A タ\A ル\A ヤ\A イ\A ワ\A ホ\A ホ\A ス\A ン\A 3\A フ\A サ\A ン\A ハ\A ヌ\A ロ\A ユ\A ネ\A ン\A ノ\A ム\A モ\A カ\A マ\A ユ\A レ\A モ\A ホ\A メ\A ス\A セ\A ツ\A テ\A ル\A ケ\A ハ\A ロ\A オ\A リ\A ノ\A リ\A ソ\A 0\A リ\A ウ\A オ\A フ\A チ\A ヨ\A レ\A セ\A テ\A ロ\A ヒ\A サ\A ワ\A コ\A オ\A ナ\A ケ\A キ\A キ\A キ\A ル\A タ\A ル\A ヤ\A イ\A ワ\A ホ\A ホ";
+  animation-duration: 11s;
+  animation-delay: -2.2s;
+  background-position: 0 -4em;
+}
+.rain span:nth-child(43)::before {
+  content: "ン\A レ\A テ\A ハ\A ム\A ン\A ニ\A ヌ\A テ\A ヌ\A ユ\A サ\A ユ\A ウ\A ラ\A ン\A 8\A ミ\A ノ\A ヨ\A ト\A ユ\A ワ\A ヤ\A ヤ\A ニ\A カ\A ヘ\A イ\A サ\A ス\A セ\A キ\A カ\A ウ\A ソ\A ツ\A ユ\A テ\A マ\A ホ\A マ\A ル\A 3\A サ\A ラ\A ケ\A レ\A ム\A ラ\A ユ\A ケ\A 7\A ハ\A リ\A マ\A エ\A ン\A ロ\A ル\A レ\A ル\A エ\A ロ\A ン\A レ\A テ\A ハ\A ム\A ン\A ニ\A ヌ\A テ\A ヌ\A ユ\A サ\A ユ\A ウ\A ラ\A ン\A 8\A ミ\A ノ\A ヨ\A ト\A ユ\A ワ\A ヤ\A ヤ\A ニ\A カ\A ヘ\A イ\A サ\A ス\A セ\A キ\A カ\A ウ\A ソ\A ツ\A ユ\A テ\A マ\A ホ\A マ\A ル\A 3\A サ\A ラ\A ケ\A レ\A ム\A ラ\A ユ\A ケ\A 7\A ハ\A リ\A マ\A エ\A ン\A ロ\A ル\A レ\A ル\A エ\A ロ";
+  animation-duration: 14.5s;
+  animation-delay: -5.1s;
+  background-position: 0 -9em;
+}
+.rain span:nth-child(44)::before {
+  content: "イ\A サ\A カ\A ヤ\A メ\A ネ\A ケ\A カ\A ハ\A ナ\A タ\A ク\A ラ\A ツ\A イ\A オ\A ヘ\A ル\A ン\A シ\A ツ\A ハ\A ロ\A ワ\A マ\A サ\A ナ\A 2\A メ\A キ\A ミ\A ケ\A ト\A ホ\A フ\A ケ\A ツ\A ニ\A ム\A ル\A サ\A オ\A ヘ\A キ\A ア\A ユ\A ワ\A ル\A キ\A シ\A ハ\A ネ\A ヨ\A ロ\A レ\A メ\A ラ\A サ\A ヌ\A ユ\A コ\A ア\A エ\A ク\A イ\A サ\A カ\A ヤ\A メ\A ネ\A ケ\A カ\A ハ\A ナ\A タ\A ク\A ラ\A ツ\A イ\A オ\A ヘ\A ル\A ン\A シ\A ツ\A ハ\A ロ\A ワ\A マ\A サ\A ナ\A 2\A メ\A キ\A ミ\A ケ\A ト\A ホ\A フ\A ケ\A ツ\A ニ\A ム\A ル\A サ\A オ\A ヘ\A キ\A ア\A ユ\A ワ\A ル\A キ\A シ\A ハ\A ネ\A ヨ\A ロ\A レ\A メ\A ラ\A サ\A ヌ\A ユ\A コ\A ア\A エ\A ク";
+  animation-duration: 9.5s;
+  animation-delay: -1.3s;
+  background-position: 0 -2em;
+}
+.rain span:nth-child(45)::before {
+  content: "ハ\A ヤ\A ヒ\A 7\A エ\A ネ\A ミ\A モ\A ホ\A ナ\A 9\A ム\A コ\A ヌ\A コ\A 0\A ヌ\A 8\A 8\A ク\A ラ\A 0\A ウ\A マ\A ケ\A ユ\A ラ\A サ\A コ\A カ\A エ\A ク\A タ\A ソ\A ク\A ン\A テ\A ネ\A ケ\A リ\A ト\A タ\A モ\A キ\A カ\A ム\A メ\A チ\A ヒ\A コ\A ム\A ユ\A オ\A ツ\A リ\A ホ\A ホ\A ス\A フ\A ツ\A メ\A ヒ\A イ\A ノ\A ハ\A ヤ\A ヒ\A 7\A エ\A ネ\A ミ\A モ\A ホ\A ナ\A 9\A ム\A コ\A ヌ\A コ\A 0\A ヌ\A 8\A 8\A ク\A ラ\A 0\A ウ\A マ\A ケ\A ユ\A ラ\A サ\A コ\A カ\A エ\A ク\A タ\A ソ\A ク\A ン\A テ\A ネ\A ケ\A リ\A ト\A タ\A モ\A キ\A カ\A ム\A メ\A チ\A ヒ\A コ\A ム\A ユ\A オ\A ツ\A リ\A ホ\A ホ\A ス\A フ\A ツ\A メ\A ヒ\A イ\A ノ";
+  animation-duration: 13s;
+  animation-delay: -7.4s;
+  background-position: 0 -7em;
+}
+.rain span:nth-child(46)::before {
+  content: "チ\A ロ\A セ\A ネ\A ユ\A ル\A モ\A ト\A フ\A ク\A ル\A ユ\A ヨ\A ラ\A ヘ\A ホ\A ヌ\A モ\A ヒ\A ソ\A ラ\A ニ\A フ\A チ\A サ\A イ\A ア\A エ\A ク\A オ\A ヤ\A 4\A コ\A リ\A ヒ\A ホ\A ケ\A ハ\A コ\A ユ\A ユ\A ヌ\A カ\A ソ\A ヨ\A ホ\A ソ\A カ\A ミ\A ソ\A ノ\A ネ\A モ\A ヒ\A ツ\A ル\A ア\A ロ\A ヨ\A ヨ\A ス\A ユ\A ナ\A オ\A チ\A ロ\A セ\A ネ\A ユ\A ル\A モ\A ト\A フ\A ク\A ル\A ユ\A ヨ\A ラ\A ヘ\A ホ\A ヌ\A モ\A ヒ\A ソ\A ラ\A ニ\A フ\A チ\A サ\A イ\A ア\A エ\A ク\A オ\A ヤ\A 4\A コ\A リ\A ヒ\A ホ\A ケ\A ハ\A コ\A ユ\A ユ\A ヌ\A カ\A ソ\A ヨ\A ホ\A ソ\A カ\A ミ\A ソ\A ノ\A ネ\A モ\A ヒ\A ツ\A ル\A ア\A ロ\A ヨ\A ヨ\A ス\A ユ\A ナ\A オ";
+  animation-duration: 16.5s;
+  animation-delay: -3.6s;
+  background-position: 0 -11em;
+}
+.rain span:nth-child(47)::before {
+  content: "ワ\A ヨ\A ラ\A ム\A ロ\A オ\A ヌ\A セ\A ヒ\A メ\A フ\A ロ\A ネ\A ロ\A 4\A サ\A ラ\A チ\A キ\A チ\A モ\A ケ\A ネ\A ラ\A キ\A サ\A キ\A テ\A ネ\A ワ\A サ\A ユ\A カ\A ア\A ナ\A キ\A サ\A フ\A カ\A オ\A ミ\A レ\A ヨ\A ヌ\A メ\A ヨ\A フ\A ワ\A モ\A 5\A キ\A タ\A イ\A ワ\A ユ\A マ\A ネ\A ワ\A ワ\A ヘ\A オ\A ケ\A ニ\A シ\A ワ\A ヨ\A ラ\A ム\A ロ\A オ\A ヌ\A セ\A ヒ\A メ\A フ\A ロ\A ネ\A ロ\A 4\A サ\A ラ\A チ\A キ\A チ\A モ\A ケ\A ネ\A ラ\A キ\A サ\A キ\A テ\A ネ\A ワ\A サ\A ユ\A カ\A ア\A ナ\A キ\A サ\A フ\A カ\A オ\A ミ\A レ\A ヨ\A ヌ\A メ\A ヨ\A フ\A ワ\A モ\A 5\A キ\A タ\A イ\A ワ\A ユ\A マ\A ネ\A ワ\A ワ\A ヘ\A オ\A ケ\A ニ\A シ";
+  animation-duration: 10.5s;
+  animation-delay: -6.2s;
+  background-position: 0 -5em;
+}
+.rain span:nth-child(48)::before {
+  content: "ロ\A フ\A ニ\A カ\A 3\A エ\A カ\A ラ\A レ\A キ\A ソ\A ル\A 5\A ハ\A ソ\A ク\A メ\A ム\A ヘ\A ヘ\A ハ\A リ\A ラ\A ケ\A ウ\A ヨ\A テ\A ア\A シ\A ラ\A ハ\A カ\A ネ\A ネ\A 9\A エ\A ミ\A シ\A ヘ\A ツ\A イ\A テ\A チ\A タ\A ロ\A ホ\A ロ\A コ\A 7\A ワ\A ロ\A ミ\A ウ\A タ\A ト\A リ\A オ\A ホ\A ツ\A シ\A コ\A リ\A レ\A ス\A ロ\A フ\A ニ\A カ\A 3\A エ\A カ\A ラ\A レ\A キ\A ソ\A ル\A 5\A ハ\A ソ\A ク\A メ\A ム\A ヘ\A ヘ\A ハ\A リ\A ラ\A ケ\A ウ\A ヨ\A テ\A ア\A シ\A ラ\A ハ\A カ\A ネ\A ネ\A 9\A エ\A ミ\A シ\A ヘ\A ツ\A イ\A テ\A チ\A タ\A ロ\A ホ\A ロ\A コ\A 7\A ワ\A ロ\A ミ\A ウ\A タ\A ト\A リ\A オ\A ホ\A ツ\A シ\A コ\A リ\A レ\A ス";
+  animation-duration: 12.5s;
+  animation-delay: -4.1s;
+  background-position: 0 -13em;
+}
+.rain span:nth-child(49)::before {
+  content: "エ\A メ\A ユ\A ル\A ル\A ル\A カ\A ケ\A ケ\A ニ\A ヘ\A メ\A ロ\A ソ\A ヘ\A テ\A メ\A キ\A カ\A シ\A ハ\A ウ\A 8\A オ\A ミ\A テ\A ル\A オ\A カ\A レ\A ウ\A エ\A ア\A フ\A ネ\A シ\A シ\A ヘ\A チ\A ラ\A ル\A オ\A ヌ\A ス\A 5\A ス\A キ\A タ\A ケ\A ノ\A ル\A ユ\A フ\A ツ\A ヌ\A 9\A ヘ\A カ\A ヘ\A 9\A ヨ\A ソ\A マ\A エ\A エ\A メ\A ユ\A ル\A ル\A ル\A カ\A ケ\A ケ\A ニ\A ヘ\A メ\A ロ\A ソ\A ヘ\A テ\A メ\A キ\A カ\A シ\A ハ\A ウ\A 8\A オ\A ミ\A テ\A ル\A オ\A カ\A レ\A ウ\A エ\A ア\A フ\A ネ\A シ\A シ\A ヘ\A チ\A ラ\A ル\A オ\A ヌ\A ス\A 5\A ス\A キ\A タ\A ケ\A ノ\A ル\A ユ\A フ\A ツ\A ヌ\A 9\A ヘ\A カ\A ヘ\A 9\A ヨ\A ソ\A マ\A エ";
+  animation-duration: 8.5s;
+  animation-delay: -0.4s;
+  background-position: 0 0em;
+}
+.rain span:nth-child(50)::before {
+  content: "ホ\A ム\A ワ\A 2\A ル\A ソ\A ソ\A ソ\A マ\A ヘ\A ユ\A チ\A チ\A ハ\A メ\A ヤ\A キ\A ン\A チ\A ホ\A ヌ\A シ\A ウ\A ユ\A ア\A ヒ\A ウ\A コ\A ワ\A レ\A モ\A テ\A テ\A ハ\A ル\A テ\A ワ\A カ\A ル\A ホ\A リ\A ヤ\A ワ\A ト\A ノ\A ヘ\A ホ\A ネ\A カ\A カ\A フ\A ス\A ロ\A リ\A キ\A ロ\A カ\A ハ\A ナ\A オ\A ト\A タ\A モ\A マ\A ホ\A ム\A ワ\A 2\A ル\A ソ\A ソ\A ソ\A マ\A ヘ\A ユ\A チ\A チ\A ハ\A メ\A ヤ\A キ\A ン\A チ\A ホ\A ヌ\A シ\A ウ\A ユ\A ア\A ヒ\A ウ\A コ\A ワ\A レ\A モ\A テ\A テ\A ハ\A ル\A テ\A ワ\A カ\A ル\A ホ\A リ\A ヤ\A ワ\A ト\A ノ\A ヘ\A ホ\A ネ\A カ\A カ\A フ\A ス\A ロ\A リ\A キ\A ロ\A カ\A ハ\A ナ\A オ\A ト\A タ\A モ\A マ";
+  animation-duration: 11s;
+  animation-delay: -2.2s;
+  background-position: 0 -4em;
+}
+.rain span:nth-child(51)::before {
+  content: "ハ\A コ\A キ\A 0\A ン\A ワ\A タ\A ア\A ヌ\A ホ\A ア\A フ\A ウ\A レ\A ツ\A ユ\A ヨ\A サ\A モ\A ノ\A ミ\A ミ\A テ\A タ\A フ\A エ\A マ\A カ\A サ\A ル\A オ\A ル\A ヤ\A ユ\A チ\A テ\A ネ\A ヌ\A ツ\A ク\A セ\A イ\A エ\A イ\A ホ\A ニ\A コ\A オ\A カ\A テ\A ワ\A ケ\A リ\A ハ\A マ\A ウ\A ム\A オ\A ミ\A タ\A サ\A ネ\A コ\A ヒ\A ハ\A コ\A キ\A 0\A ン\A ワ\A タ\A ア\A ヌ\A ホ\A ア\A フ\A ウ\A レ\A ツ\A ユ\A ヨ\A サ\A モ\A ノ\A ミ\A ミ\A テ\A タ\A フ\A エ\A マ\A カ\A サ\A ル\A オ\A ル\A ヤ\A ユ\A チ\A テ\A ネ\A ヌ\A ツ\A ク\A セ\A イ\A エ\A イ\A ホ\A ニ\A コ\A オ\A カ\A テ\A ワ\A ケ\A リ\A ハ\A マ\A ウ\A ム\A オ\A ミ\A タ\A サ\A ネ\A コ\A ヒ";
+  animation-duration: 14.5s;
+  animation-delay: -5.1s;
+  background-position: 0 -9em;
+}
+.rain span:nth-child(52)::before {
+  content: "ツ\A ナ\A ク\A 2\A シ\A ワ\A マ\A ナ\A ス\A ン\A ツ\A モ\A レ\A ノ\A ケ\A ソ\A モ\A テ\A ホ\A タ\A エ\A ミ\A チ\A ヤ\A チ\A チ\A ヨ\A ナ\A ミ\A ス\A ヒ\A メ\A ナ\A フ\A サ\A ロ\A オ\A ソ\A チ\A コ\A ン\A ウ\A ニ\A ン\A ロ\A ア\A ナ\A メ\A オ\A ケ\A カ\A テ\A エ\A ス\A ネ\A ヘ\A ル\A チ\A サ\A ニ\A ソ\A コ\A キ\A ケ\A ツ\A ナ\A ク\A 2\A シ\A ワ\A マ\A ナ\A ス\A ン\A ツ\A モ\A レ\A ノ\A ケ\A ソ\A モ\A テ\A ホ\A タ\A エ\A ミ\A チ\A ヤ\A チ\A チ\A ヨ\A ナ\A ミ\A ス\A ヒ\A メ\A ナ\A フ\A サ\A ロ\A オ\A ソ\A チ\A コ\A ン\A ウ\A ニ\A ン\A ロ\A ア\A ナ\A メ\A オ\A ケ\A カ\A テ\A エ\A ス\A ネ\A ヘ\A ル\A チ\A サ\A ニ\A ソ\A コ\A キ\A ケ";
+  animation-duration: 9.5s;
+  animation-delay: -1.3s;
+  background-position: 0 -2em;
+}
+.rain span:nth-child(53)::before {
+  content: "サ\A ヘ\A ワ\A ヘ\A ウ\A ン\A ユ\A ユ\A エ\A ワ\A ナ\A ウ\A ロ\A ウ\A ナ\A レ\A チ\A ロ\A カ\A ウ\A サ\A ノ\A ニ\A ネ\A ロ\A セ\A ス\A レ\A テ\A シ\A リ\A レ\A サ\A セ\A ノ\A エ\A ナ\A レ\A マ\A モ\A エ\A ケ\A ユ\A イ\A ラ\A ス\A ケ\A ヌ\A テ\A ハ\A ム\A タ\A エ\A ロ\A リ\A マ\A ラ\A ツ\A ク\A ニ\A テ\A ス\A ア\A ノ\A サ\A ヘ\A ワ\A ヘ\A ウ\A ン\A ユ\A ユ\A エ\A ワ\A ナ\A ウ\A ロ\A ウ\A ナ\A レ\A チ\A ロ\A カ\A ウ\A サ\A ノ\A ニ\A ネ\A ロ\A セ\A ス\A レ\A テ\A シ\A リ\A レ\A サ\A セ\A ノ\A エ\A ナ\A レ\A マ\A モ\A エ\A ケ\A ユ\A イ\A ラ\A ス\A ケ\A ヌ\A テ\A ハ\A ム\A タ\A エ\A ロ\A リ\A マ\A ラ\A ツ\A ク\A ニ\A テ\A ス\A ア\A ノ";
+  animation-duration: 13s;
+  animation-delay: -7.4s;
+  background-position: 0 -7em;
+}
+.rain span:nth-child(54)::before {
+  content: "ノ\A フ\A ハ\A ア\A ア\A 4\A セ\A ツ\A ム\A ト\A タ\A エ\A ト\A ヨ\A ナ\A フ\A ヌ\A フ\A ホ\A サ\A 0\A 2\A マ\A コ\A ワ\A リ\A レ\A ホ\A ホ\A 1\A ル\A ニ\A ヨ\A ソ\A カ\A ミ\A ツ\A ハ\A マ\A コ\A ヤ\A ミ\A メ\A ラ\A ケ\A リ\A ク\A ミ\A マ\A マ\A イ\A フ\A セ\A テ\A ソ\A マ\A レ\A フ\A ミ\A ホ\A ユ\A オ\A ネ\A キ\A ノ\A フ\A ハ\A ア\A ア\A 4\A セ\A ツ\A ム\A ト\A タ\A エ\A ト\A ヨ\A ナ\A フ\A ヌ\A フ\A ホ\A サ\A 0\A 2\A マ\A コ\A ワ\A リ\A レ\A ホ\A ホ\A 1\A ル\A ニ\A ヨ\A ソ\A カ\A ミ\A ツ\A ハ\A マ\A コ\A ヤ\A ミ\A メ\A ラ\A ケ\A リ\A ク\A ミ\A マ\A マ\A イ\A フ\A セ\A テ\A ソ\A マ\A レ\A フ\A ミ\A ホ\A ユ\A オ\A ネ\A キ";
+  animation-duration: 16.5s;
+  animation-delay: -3.6s;
+  background-position: 0 -11em;
+}
+.rain span:nth-child(55)::before {
+  content: "フ\A エ\A ヨ\A モ\A ワ\A 1\A ヨ\A コ\A ワ\A チ\A フ\A ス\A ヨ\A サ\A ネ\A ク\A ア\A ナ\A フ\A リ\A ス\A コ\A ア\A リ\A マ\A エ\A タ\A ロ\A タ\A ク\A ニ\A カ\A ヌ\A マ\A ス\A ト\A ナ\A ク\A 0\A ヤ\A ス\A チ\A 0\A ン\A ウ\A モ\A エ\A ヒ\A エ\A サ\A レ\A ロ\A タ\A ス\A ケ\A ニ\A ニ\A ヨ\A シ\A ヒ\A ナ\A チ\A ト\A ウ\A フ\A エ\A ヨ\A モ\A ワ\A 1\A ヨ\A コ\A ワ\A チ\A フ\A ス\A ヨ\A サ\A ネ\A ク\A ア\A ナ\A フ\A リ\A ス\A コ\A ア\A リ\A マ\A エ\A タ\A ロ\A タ\A ク\A ニ\A カ\A ヌ\A マ\A ス\A ト\A ナ\A ク\A 0\A ヤ\A ス\A チ\A 0\A ン\A ウ\A モ\A エ\A ヒ\A エ\A サ\A レ\A ロ\A タ\A ス\A ケ\A ニ\A ニ\A ヨ\A シ\A ヒ\A ナ\A チ\A ト\A ウ";
+  animation-duration: 10.5s;
+  animation-delay: -6.2s;
+  background-position: 0 -5em;
+}
+.rain span:nth-child(56)::before {
+  content: "ニ\A ロ\A チ\A リ\A ヨ\A ヨ\A サ\A メ\A モ\A リ\A サ\A フ\A ク\A キ\A チ\A キ\A サ\A ム\A チ\A マ\A タ\A ウ\A ヌ\A メ\A ヨ\A カ\A フ\A キ\A 2\A エ\A ス\A ノ\A ホ\A フ\A リ\A ル\A セ\A ヌ\A ホ\A ア\A セ\A カ\A ル\A フ\A リ\A ク\A ム\A セ\A ル\A ヨ\A シ\A オ\A シ\A ケ\A ン\A ミ\A ニ\A セ\A ミ\A ヘ\A ナ\A ン\A ア\A フ\A ニ\A ロ\A チ\A リ\A ヨ\A ヨ\A サ\A メ\A モ\A リ\A サ\A フ\A ク\A キ\A チ\A キ\A サ\A ム\A チ\A マ\A タ\A ウ\A ヌ\A メ\A ヨ\A カ\A フ\A キ\A 2\A エ\A ス\A ノ\A ホ\A フ\A リ\A ル\A セ\A ヌ\A ホ\A ア\A セ\A カ\A ル\A フ\A リ\A ク\A ム\A セ\A ル\A ヨ\A シ\A オ\A シ\A ケ\A ン\A ミ\A ニ\A セ\A ミ\A ヘ\A ナ\A ン\A ア\A フ";
+  animation-duration: 12.5s;
+  animation-delay: -4.1s;
+  background-position: 0 -13em;
+}
