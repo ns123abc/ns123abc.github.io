@@ -36,4 +36,4 @@ Also, see [[listening]] .
 <img src="images/samsoncathedral.jpeg" alt="" width="420" height="420">
 </figure>
 
-**Incoming** : [[old_cities|old cities]] [[nikhil_sareen|Nikhil Sareen]] [[reading]] [[listening]]
+**Incoming** : old cities [[nikhil_sareen|Nikhil Sareen]] [[reading]] [[listening]]

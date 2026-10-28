@@ -11,4 +11,4 @@ created: 2022-09-01
 <figcaption>Everyday gadgets</figcaption>
 </figure>
 
-**Incoming** : [[lifestyle]] [[notebook|notebooks]] [[directory]]
+**Incoming** : lifestyle notebooks [[directory]]

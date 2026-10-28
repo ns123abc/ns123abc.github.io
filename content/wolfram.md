@@ -18,4 +18,4 @@ I don't have any desire to become a professional programmer but i like turning i
 
 I spend alot of time on my computer and find it super useful. I think its time for me to experiment in building interesting simulations. To do that first i must learn to think computationaly about what i want to do, and how to communicate it to a computer using a programming language.
 
-**Incoming** : [[projects]]
+**Incoming** : projects

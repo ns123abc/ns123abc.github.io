@@ -5,7 +5,7 @@ created: 2022-09-01
 
 ## Sareen.wiki is a digital playground and personal logging system.
 
-The aim of this wiki is to build a form of **personal assistant** to help with the management of a vast repository of recorded statistics which includes [[journal|daily logs]] , notes on [[index|various projects]] and [[mirrors|curated pages of general knowledge]] .
+The aim of this wiki is to build a form of **personal assistant** to help with the management of a vast repository of recorded statistics which includes daily logs , notes on [[index|various projects]] and curated pages of general knowledge .
 
 Using this library should be **adventerous**.
 

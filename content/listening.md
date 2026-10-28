@@ -92,4 +92,4 @@ created: 2022-08-29
 - **Infinite**: Eminem
 - **Indigoism**: The Underachievers
 
-**Incoming**: [[2021]] [[directory]]
+**Incoming**: 2021 [[directory]]

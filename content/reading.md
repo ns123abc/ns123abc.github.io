@@ -83,4 +83,4 @@ For a list of all time favourites, see [[directory]].
 - **Brave New World**: Aldous Huxley
 - **The Adventures of Huckleberry Finn**: Mark Twain
 
-**Incoming**: [[now|Recent Changes]] [[2021]] [[routine]] [[directory]]
+**Incoming**: [[now|Recent Changes]] 2021 [[routine]] [[directory]]
