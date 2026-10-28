@@ -117,6 +117,19 @@ class Site:
                 html_cols.append("<ul>" + "".join(items) + "</ul>")
         return "".join(html_cols)
 
+    def running(self, page):
+        """Parent and created date under the title. Absent when created was not set."""
+        if not page.created:
+            return ""
+        parts = []
+        parent = self.pages.get(page.parent) if page.parent else None
+        if parent is not None:
+            parts.append(_esc(parent.title))
+        elif page.parent:
+            parts.append(_esc(page.parent))
+        parts.append(f'<time datetime="{_esc(page.created)}">{_esc(page.created)}</time>')
+        return f'<p class="running">{" · ".join(parts)}</p>\n'
+
     def render(self, page):
         incoming = " ".join(f'<a href="{b}.html">{_esc(self.pages[b].title)}</a>'
                             for b in page.backlinks if b in self.pages)
@@ -124,7 +137,9 @@ class Site:
             doc_title=_esc(f"{page.title} — {SITE_NAME}"),
             description=f'\n<meta name="description" content="{_esc(page.summary)}">' if page.summary else "",
             nav=self.nav(page),
+            kind=_esc(page.kind),
             title=_esc(page.title),
+            running=self.running(page),
             body=page.html,
             incoming=f'<section class="incoming"><b>incoming</b>: {incoming}</section>' if incoming else "",
         )

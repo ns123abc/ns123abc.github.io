@@ -106,7 +106,7 @@ class SkeletonTest(SiteTest):
                                          '<meta name="description" content="Who &amp; &quot;why&quot;.">\n'
                                          '<link rel="stylesheet" href="main.css">\n'
                                          '<link rel="icon" href="images/slogo7.png" type="image/png">\n'
-                                         "</head>\n<body>\n"))
+                                         "</head>\n<body class=\"page\">\n"))
         self.assertNotIn('name="description"', self.html("nikhil_sareen.html"))
 
     def test_summary_is_never_generated(self):
@@ -526,6 +526,91 @@ def build(site, out):
     def test_writing_a_file_twice_is_an_error(self):
         site = self.build({"extras.py": "def build(site, out):\n    site.write('about.html', 'x')\n"}, ok=False)
         self.assertError(site, "about.html is written twice")
+
+
+class RunningLineTest(SiteTest):
+    def test_created_with_parent_shows_parent_title_and_date(self):
+        self.build({
+            "content/reading.md": "---\ntitle: reading\n---\n\nBooks.\n",
+            "content/dostoevsky.md": "---\ntitle: Dostoevsky\nparent: reading\ncreated: 2022-08-29\n---\n\nNotes.\n",
+        })
+        page = self.html("dostoevsky.html")
+        self.assertIn(
+            '<main><h1>Dostoevsky</h1>\n'
+            '<p class="running">reading · <time datetime="2022-08-29">2022-08-29</time></p>\n'
+            "<p>Notes.</p>\n",
+            page,
+        )
+        self.assertIn('<body class="page">', page)
+        self.assertNotIn("2022-08-29", page.split("<main")[0])
+
+    def test_no_created_shows_nothing_extra(self):
+        self.build()
+        page = self.html("nikhil_sareen.html")
+        self.assertNotIn('class="running"', page)
+        self.assertNotIn("<time", page)
+        self.assertIn('<body class="page">', page)
+        self.assertIn('<main><h1>Nikhil Sareen</h1>\n<p>Hello.</p>\n', page)
+
+    def test_created_without_parent_shows_only_the_date(self):
+        self.build({"content/about.md": "---\ntitle: about\ncreated: 2022-09-01\n---\n\nHi.\n"})
+        about = self.html("about.html")
+        self.assertIn(
+            '<main><h1>about</h1>\n'
+            '<p class="running"><time datetime="2022-09-01">2022-09-01</time></p>\n'
+            "<p>Hi.</p>\n",
+            about,
+        )
+        self.assertNotIn("·", about)
+
+    def test_log_date_is_not_used_as_created(self):
+        self.build({"content/log/2022-08-29.md": "---\ndate: 2022-08-29\ndate_approx: true\n---\n\nRead.\n"})
+        page = self.html("2022-08-29.html")
+        self.assertIn('<body class="log">', page)
+        self.assertIn('<main><h1>2022-08-29</h1>\n<p>Read.</p>\n', page)
+        self.assertNotIn('class="running"', page)
+        self.assertNotIn("<time", page)
+
+    def test_list_keeps_a_list_class_and_still_shows_created(self):
+        self.build({
+            "content/reading.md": "---\ntitle: reading\nparent: about\ncreated: 2022-08-29\n---\n\n"
+                                  "## 2022\n\n- **Meditations**: Marcus Aurelius. 180\n",
+        })
+        page = self.html("reading.html")
+        self.assertIn('<body class="list">', page)
+        self.assertIn(
+            '<main><h1>reading</h1>\n'
+            '<p class="running">about · <time datetime="2022-08-29">2022-08-29</time></p>\n',
+            page,
+        )
+
+    def test_parent_title_is_escaped_and_body_html_is_unchanged(self):
+        site = self.build({
+            "content/about.md": '---\ntitle: A & B <c>\n---\n\nParent.\n',
+            "content/note.md": '---\ntitle: note\nparent: about\ncreated: 2022-08-29\n---\n\nBody.\n',
+        })
+        self.assertEqual(site.pages["note"].html, "<p>Body.</p>\n")
+        self.assertIn(
+            '<p class="running">A &amp; B &lt;c&gt; · <time datetime="2022-08-29">2022-08-29</time></p>\n',
+            self.html("note.html"),
+        )
+
+    def test_stylesheet_narrows_essays_and_leaves_lists_wide(self):
+        with open(os.path.join(REPO, "main.css"), encoding="utf-8") as fh:
+            css = fh.read()
+        self.assertRegex(css, r"(?m)^main \{[^}]*max-width:720px")
+        essay = re.search(
+            r"body\.page main:not\(:has\(li > strong\)\), body\.log main \{([^}]*)\}", css)
+        self.assertIsNotNone(essay)
+        self.assertIn("max-width:66ch", essay.group(1))
+        self.assertIn("margin-bottom:64px", essay.group(1))
+        head = re.search(
+            r"body:is\(\.page, \.log\):not\(:has\(main li > strong\)\) header \{([^}]*)\}", css)
+        self.assertIsNotNone(head)
+        self.assertIn("margin-bottom:16px", head.group(1))
+        self.assertNotRegex(css, r"(?m)^main \{[^}]*66ch")
+        self.assertNotIn("::first-letter", css)
+        self.assertIn("font:18px/1.6 var(--prose)", css)
 
 
 if __name__ == "__main__":

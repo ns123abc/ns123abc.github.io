@@ -41,9 +41,17 @@ body a.self, body a.parent { font-style:italic }
 a[aria-current] { font-weight:bold;text-decoration:underline 2px;text-underline-offset:4px }
 
 main { max-width:720px;clear:both;margin-bottom:45px;overflow-wrap:break-word }
+/* Long notes use a 66ch measure, left aligned, so the black to the right is margin.
+   List pages, and catalogue rows (li > strong), keep the 720px column.
+   The foot under a note is deeper than the head above it. */
+body.page main:not(:has(li > strong)), body.log main { max-width:66ch;margin-bottom:64px }
+body:is(.page, .log):not(:has(main li > strong)) header { margin-bottom:16px }
+body:is(.page, .log):not(:has(main li > strong)) nav { margin-bottom:16px }
 /* Prose that legacy markup leaves outside <main> */
 body > :is(figure, h1, h2, h3, p, ul) { max-width:720px;margin-bottom:30px }
 h1 { font-size:32px;line-height:40px }
+h1:has(+ .running) { margin-bottom:16px }
+main .running { margin-bottom:30px;color:var(--dim);font-family:var(--chrome);font-size:16px;line-height:24px }
 h2 { font-size:24px;line-height:32px }
 h3 { font-size:16px;line-height:24px }
 h4 { font-size:inherit }
