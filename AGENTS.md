@@ -164,9 +164,11 @@ The `<head>`, in this order (the description meta appears only when `summary` is
 <title>{title} — NEO</title>
 <meta name="description" content="{summary}">
 <link rel="stylesheet" href="main.css">
-<link rel="icon" href="images/slogo7.png" type="image/png">
+<link rel="icon" href="images/favicon.png" type="image/png">
 </head>
 ```
+
+- The icon is `images/favicon.png`, a 64 px PNG of about 4 KB. Never point pages at `images/slogo7.png`, which is about 400 KB.
 
 - The title is always `{title} — NEO`, including on the home page.
 - No canonical link, no feed link and no `BASE_URL` in pages, so pages stay domain-independent.
