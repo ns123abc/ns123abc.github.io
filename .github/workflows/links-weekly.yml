@@ -1,0 +1,63 @@
+name: Links (weekly)
+
+# Report-only: broken external links show up in the job summary and never fail anything.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: links-weekly
+  cancel-in-progress: true
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Pick pages to check
+        id: target
+        run: |
+          if [ -f build.py ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            echo "glob=./site/**/*.html" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=false" >> "$GITHUB_OUTPUT"
+            echo "glob=./*.html" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-python@v7
+        if: steps.target.outputs.build == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Build
+        if: steps.target.outputs.build == 'true'
+        run: |
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+          python3 build.py
+
+      # --scheme limits the check to external http(s) links; internal links are build.py's job.
+      - name: Check external links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --scheme https
+            --scheme http
+            --max-retries 2
+            --timeout 20
+            '${{ steps.target.outputs.glob }}'
+          fail: false
+          failIfEmpty: false
+          jobSummary: true

@@ -1,0 +1,71 @@
+name: Deploy
+
+# Manual only until the Pages source is switched to GitHub Actions and the root HTML is retired.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # build.py reads "updated" dates from git history.
+          fetch-depth: 0
+
+      - name: Require build.py
+        run: |
+          if [ ! -f build.py ]; then
+            echo "::error::build.py not found; nothing to deploy."
+            exit 1
+          fi
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+          python -m pip install pytest==9.2.0
+
+      - name: Build
+        run: python3 build.py
+
+      - name: Test
+        run: |
+          if compgen -G "tests/test_*.py" > /dev/null; then
+            python -m pytest -q tests
+          else
+            echo "::notice::No tests/test_*.py found; skipping tests."
+          fi
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

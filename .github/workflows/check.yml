@@ -1,0 +1,68 @@
+name: Check
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # build.py reads "updated" dates from git history.
+          fetch-depth: 0
+
+      # Lets this workflow merge before build.py lands; until then the job passes as a no-op.
+      - name: Detect build.py
+        id: guard
+        run: |
+          if [ -f build.py ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::build.py not found; skipping build, tests and preview."
+          fi
+
+      - uses: actions/setup-python@v7
+        if: steps.guard.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        if: steps.guard.outputs.present == 'true'
+        run: |
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+          python -m pip install pytest==9.2.0
+
+      - name: Build
+        if: steps.guard.outputs.present == 'true'
+        run: python3 build.py
+
+      - name: Test
+        if: steps.guard.outputs.present == 'true'
+        run: |
+          if compgen -G "tests/test_*.py" > /dev/null; then
+            python -m pytest -q tests
+          else
+            echo "::notice::No tests/test_*.py found; skipping tests."
+          fi
+
+      - name: Upload site preview
+        if: steps.guard.outputs.present == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: site-preview
+          path: site/
+          if-no-files-found: error
+          retention-days: 14
