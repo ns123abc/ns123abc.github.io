@@ -64,9 +64,8 @@ jobs:
             echo "present=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # Empty site/ with no content/ is unchanged: this step is skipped and
-      # upload-pages-artifact still fails on the missing directory.
-      # Once content/ exists, refuse to upload an empty build.
+      # content/ with an empty site/ is an error. A site/ with no HTML at all,
+      # including when content/ is missing, is refused below before the upload.
       - name: Require site/ when content/ exists
         if: steps.content.outputs.present == 'true' && hashFiles('site/**') == ''
         run: |
@@ -74,6 +73,16 @@ jobs:
           exit 1
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      # build.py exits 0 and writes nothing when content/ is missing. Uploading
+      # that empty tree would publish nothing and freeze GitHub Pages.
+      - name: Refuse site/ with no HTML
+        run: |
+          if [ -d site ] && find site -name '*.html' -print -quit | grep -q .; then
+            exit 0
+          fi
+          echo "::error::site/ has no HTML, so there is nothing to publish. build.py exits 0 and writes nothing when content/ is missing, and uploading that empty tree would freeze GitHub Pages. Stopping before upload-pages-artifact."
+          exit 1
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
