@@ -1,0 +1,399 @@
+/* Abloh / Runner
+   Silver field: 2049 Los Angeles, a cold silver-white, not the black of 1982.
+   Belt: flat caution yellow, diagonal stripes, Helvetica in quotes.
+   Sun: Wallace gold, a small source you can see.
+   Thread: yellow edges, red middle. Vegas against the cold city.
+   Night plate: 1982 contrast, one shaft of light.
+   Type: Helvetica stack for the quotes, Goudy stack for the crawl,
+   Silkscreen for the readout. Silkscreen is the site face, OFL 1.1,
+   see fonts/OFL.txt. */
+
+@font-face {
+  font-family: Silkscreen;
+  src: url("../fonts/silkscreen-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Silkscreen;
+  src: url("../fonts/silkscreen-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --silver: #d7dbe0;
+  --ink: #141516;
+  --night: #101114;
+  --readout: #f3f0e8;
+  --readout-dim: #b7b1a6;
+  --belt: #f0c400;
+  --sun: #f3ddb0;
+  --vegas: #9d341c;
+  --quote: Helvetica, "Helvetica Neue", Arial, Arimo, "Liberation Sans", sans-serif;
+  --crawl: "Goudy Oldstyle", "Goudy Old Style", Palatino, "Palatino Linotype", "Iowan Old Style", "Liberation Serif", "Times New Roman", serif;
+  --read: Silkscreen, "Liberation Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--silver);
+  color: var(--ink);
+  font-family: var(--crawl);
+  font-size: 18px;
+  line-height: 1.5;
+  text-size-adjust: 100%;
+}
+
+::selection { background: var(--vegas); color: var(--readout); }
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.skip {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  transform: translateY(-120%);
+  background: var(--belt);
+  color: var(--ink);
+  font-family: var(--quote);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 8px 10px;
+}
+
+.skip:focus { transform: none; z-index: 2; }
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap {
+  width: min(1120px, 100%);
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+.belt {
+  display: flex;
+  align-items: stretch;
+  min-height: 48px;
+  background: var(--belt);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.hazard {
+  flex: none;
+  width: 36px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--ink) 0 5px,
+    var(--belt) 5px 10px
+  );
+}
+
+.tape {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--quote);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.mast { padding-top: 28px; }
+
+.bug {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  font-family: var(--read);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--quote);
+  font-weight: 700;
+  font-size: clamp(1.7rem, 5.2vw, 4.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* Wallace’s sun: a pale filament in a housing, not the belt’s flat yellow. */
+.sun {
+  flex: none;
+  width: 34px;
+  height: 14px;
+  padding: 3px;
+  background: var(--night);
+}
+
+.sun span {
+  display: block;
+  height: 100%;
+  background: var(--sun);
+}
+
+.channels { padding-top: 22px; }
+
+.channels ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.channels a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 1px solid var(--ink);
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--quote);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.channels a:hover,
+.channels a:focus-visible {
+  background: var(--ink);
+  color: var(--belt);
+}
+
+.channels a:focus-visible {
+  outline: 2px solid var(--belt);
+  outline-offset: 3px;
+}
+
+.num {
+  font-family: var(--read);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+main { padding-top: 16px; }
+
+.episode {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 0;
+  padding: 16px;
+  overflow: hidden;
+  background: var(--night);
+  color: var(--readout);
+}
+
+.episode > * { position: relative; z-index: 1; }
+
+/* 1982 shaft. Wide screens have empty plate between the title and the clock. */
+.episode::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 56%;
+  width: 7%;
+  background: rgba(243, 240, 232, 0.2);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
+.sample {
+  display: inline-block;
+  padding: 3px 6px;
+  background: var(--belt);
+  color: var(--ink);
+  font-family: var(--quote);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: 2px;
+}
+
+.ep,
+.ttl,
+.tc {
+  font-family: var(--read);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.tc {
+  display: none;
+  margin-left: auto;
+  color: var(--readout-dim);
+}
+
+.thread {
+  height: 8px;
+  margin: 0 0 22px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    var(--belt) 0 10%,
+    var(--vegas) 10% 90%,
+    var(--belt) 90% 100%
+  );
+}
+
+.crawl {
+  max-width: 38rem;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.foot {
+  margin-top: 36px;
+  padding-top: 22px;
+  padding-bottom: 40px;
+  border-top: 1px solid var(--ink);
+}
+
+.opened {
+  margin: 0 0 14px;
+  font-family: var(--read);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.sources {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.sources li { margin: 0 0 12px; }
+
+.sources a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.sources a:hover,
+.sources a:focus-visible { color: var(--vegas); }
+
+.note { margin: 4px 0 0; font-size: 15px; }
+
+:target { outline: 3px solid var(--belt); outline-offset: 4px; }
+
+#belt:target { outline-color: var(--ink); }
+
+@media (min-width: 800px) {
+  .wrap { padding-inline: 32px; }
+
+  .belt { min-height: 64px; }
+
+  .hazard { width: 56px; }
+
+  .tape { font-size: 15px; padding-inline: 20px; }
+
+  .mast { padding-top: 40px; }
+
+  .channels { padding-top: 28px; }
+
+  .channels ol {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .channels a { min-height: 64px; font-size: 14px; }
+
+  main { padding-top: 20px; }
+
+  .episode { padding: 22px 24px; }
+
+  .tc { display: block; }
+
+  .ep,
+  .ttl { font-size: 24px; line-height: 32px; }
+
+  .crawl { font-size: 21px; line-height: 1.45; }
+
+  .foot { margin-top: 48px; padding-top: 28px; padding-bottom: 56px; }
+
+  .sources { columns: 2; column-gap: 36px; }
+
+  .sources li { break-inside: avoid; margin-bottom: 14px; }
+}
+
+@media (max-width: 799px) {
+  .episode::after { display: none; }
+}
+
+@media (max-width: 389px) {
+  h1 { font-size: 1.45rem; }
+  .channels a { font-size: 12px; letter-spacing: 0.04em; }
+}
+
+@media (prefers-contrast: more) {
+  :root { --silver: #fff; --ink: #000; --readout-dim: #fff; }
+  .channels a,
+  .foot { border-width: 2px; }
+}
+
+@media (forced-colors: active) {
+  .belt,
+  .hazard,
+  .episode,
+  .thread,
+  .sample,
+  .sun,
+  .sun span {
+    forced-color-adjust: none;
+  }
+
+  .channels a,
+  .foot { border-color: CanvasText; }
+}
