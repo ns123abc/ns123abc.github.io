@@ -9,7 +9,8 @@
   --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --fg:whitesmoke;
   --dim:#a6a6a6;
-  --rule:#444;
+  /* #444 was 2.16:1 on black. #6e6e6e is 4.12:1 on black and 3.41:1 on --well. */
+  --rule:#6e6e6e;
   --well:#1a1a1a;
   --hot:red;
   --gutter:30px;
@@ -34,6 +35,8 @@ header img { display:block;width:100px;height:auto }
 
 nav { display:flex;flex-wrap:wrap;gap:15px 45px;margin:0 0 30px;font-size:16px;line-height:24px }
 nav ul { list-style:none }
+/* Inline anchors were 20px tall, under the 24px target-size minimum. */
+nav a { display:inline-block;min-height:24px;line-height:24px }
 body a.self, body a.parent { font-style:italic }
 a[aria-current] { font-weight:bold;text-decoration:underline 2px;text-underline-offset:4px }
 
@@ -88,14 +91,26 @@ main kbd { font-size:12px;display:inline-block;padding:2px 5px;font-weight:bold;
 footer { clear:both;border-top:1.5px solid;padding:30px 0 0;font-size:16px;line-height:24px }
 footer > * { display:inline-block;margin-right:5px;vertical-align:middle }
 footer a { white-space:nowrap }
+footer a:not(:has(img)) { text-decoration:underline;text-underline-offset:4px }
 footer img { display:block;width:30px;height:30px }
 
 @media (max-width:600px) {
   :root { --gutter:15px }
-  header { margin-bottom:15px }
+  header { float:none;margin:0 0 15px }
   header img { width:80px }
-  nav { gap:10px 30px }
+  nav { gap:0 24px;width:100% }
+  nav a { min-height:44px;padding:10px 4px }
   h1 { font-size:24px;line-height:32px }
-  h2 { font-size:16px;line-height:24px }
   main ul, main ol { margin-left:20px }
+  main td, main th { padding:8px }
+}
+
+@media (prefers-contrast:more) {
+  :root { --fg:#fff;--dim:#eee;--rule:#cfcfcf }
+  :focus-visible { outline-width:3px }
+}
+
+@media (forced-colors:active) {
+  :focus-visible { outline:3px solid Highlight;box-shadow:none }
+  main td, main th, main hr, .incoming, main blockquote { border-color:CanvasText }
 }
