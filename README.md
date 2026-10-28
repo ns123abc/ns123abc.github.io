@@ -104,8 +104,10 @@ Open a pull request. Never push to `main`. The Pages build publishes every commi
 
 Keep `.nojekyll` at the repository root. Without it the legacy Pages build runs Jekyll, which fails on Markdown that contains `{{ }}` or `{% %}`, and a failed Jekyll build freezes the live site.
 
-A merge to `main` publishes the repository root, the HTML files at the top of the repo. That is the live site at https://ns123abc.github.io while Pages deploys from the `main` branch.
+A merge to `main` publishes the repository root, the HTML files at the top of the repo. That is the live site at https://ns123abc.github.io while Pages deploys from the `main` branch. Leave those root HTML files in git. They are what a rollback serves.
 
-The generated `site/` directory is deployed by `.github/workflows/deploy.yml`, which starts only when you run it: **Actions → Deploy → Run workflow**, branch `main`. The workflow checks out the full git history, installs `requirements.txt`, runs `python3 build.py`, and deploys `site/`. Visitors receive that output after **Pages → Build and deployment → Source** is set to GitHub Actions.
+`python3 build.py` writes `site/`. That directory is not the legacy root. `.github/workflows/deploy.yml` publishes it. The workflow is manual (`workflow_dispatch` only): **Actions → Deploy → Run workflow**, branch `main`. The `github-pages` environment accepts `main` only. It checks out the full git history, installs `requirements.txt`, runs `python3 build.py`, and deploys `site/`. Until a later change adds a push trigger, run Deploy again after each merge that should publish the generated site.
+
+The sitting that switches **Pages → Build and deployment → Source** to GitHub Actions, the checks before you run it, and the rollback are in [DEPLOY.md](DEPLOY.md).
 
 A pull request runs `.github/workflows/check.yml`: the build, the tests, and a `site-preview` artifact kept for 14 days when `site/` was written. The pull request does not deploy.
