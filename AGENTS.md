@@ -46,6 +46,14 @@ A slug is the old filename lowercased (`nikhil_sareen`, `datascience`), from the
 - Pages: `content/<slug>.md`.
 - Log entries: `content/log/YYYY-MM-DD.md`.
 
+### Log entries
+
+- The slug is the file name: `content/log/2022-08-29.md` is `pages["2022-08-29"]`, with `kind: log`.
+- Each entry gets its own flat page, `2022-08-29.html`, so `[[2022-08-29]]` works like any other link.
+- One file per day. A second entry on the same day goes into that day's file, so slugs can't collide.
+- The file name is the date. `date` defaults to it, and if `date` is written it must match. For an entry about the past, name the file by that date and set `date_approx: true`.
+- Log entries never appear in the nav.
+
 ### Front matter
 
 - `title`
@@ -55,6 +63,18 @@ A slug is the old filename lowercased (`nikhil_sareen`, `datascience`), from the
 - `date_approx` (`true` or `false`)
 - `summary`
 - `aliases` (reserved; unused in M2)
+
+Required and optional:
+
+- Pages: only `title` is required.
+- Log entries: nothing is required, and the front matter block itself is optional. `title` defaults to the date.
+- `created` is `YYYY-MM-DD` when present.
+- `date` is allowed only on log entries.
+- `date_approx` defaults to `false`.
+- `parent` must name an existing page, with no cycles. Top-level pages have no `parent`; `parent: index` is an error.
+- `aliases` is accepted and ignored.
+- `summary` is optional, and only the user writes it. Agents and the build never write or derive one.
+- Unknown or duplicate keys are errors. An empty value means the key is absent. One pair of surrounding quotes is stripped.
 
 Front matter is a flat `key: value` subset between `---` lines, parsed by the build itself, so there's no YAML dependency. For example:
 
@@ -69,6 +89,8 @@ created: 2022-08-29
 ### Wikilinks
 
 `[[slug]]` and `[[slug|text]]`, with the target equal to the slug. Inside tables, write `[[slug\|text]]`.
+
+A bare `[[slug]]` displays the slug as typed, as in Obsidian, so `[[nikhil_sareen]]` shows "nikhil_sareen". Use `[[slug|text]]` unless the text equals the slug exactly. When converting an existing link, the text is the old link text, unchanged.
 
 ### List lines
 
@@ -108,6 +130,29 @@ What `templates/page.html` emits (W4) and `main.css` styles (W2):
 <footer class="foot-nav"> ...icons... <span>...</span></footer>
 ```
 
-- The current page's nav link carries `aria-current="page"`.
 - A wikilink whose target has no page renders as `a.wanted`, pointing at `wanted.html#slug`.
 - `section.incoming` lists the pages that link here.
+
+The `<head>`, in this order (the description meta appears only when `summary` is set):
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} — NEO</title>
+<meta name="description" content="{summary}">
+<link rel="stylesheet" href="main.css">
+<link rel="icon" href="images/slogo7.png" type="image/png">
+</head>
+```
+
+- The title is always `{title} — NEO`, including on the home page.
+- No canonical link, no feed link and no `BASE_URL` in pages, so pages stay domain-independent.
+
+The nav uses XXIIVV-style columns:
+
+- One `<ul>` of top-level pages, then one `<ul>` per level down to the current page, then one `<ul>` of the current page's children.
+- The current page's link carries `aria-current="page"`. Each ancestor on the path is `<a class="parent" href="x.html">`.
+- Items are sorted by slug, and the link text is the page title. `index` and log entries are never listed.
