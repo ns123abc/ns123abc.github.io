@@ -22,3 +22,5 @@ If you have any **question or feedback** contact [[nikhil_sareen|Nikhil Sareen]]
 </figure>
 
 **Explore** : [[nikhil_sareen|Nikhil Sareen]] [[goals]] [[now|journal]] [[reading]] [[listening]] [[watching]]
+
+**Credits**: this wiki began as a remix of [XXIIVV](https://wiki.xxiivv.com/) by Devine Lu Linvega, and the italic paragraph above adapts Vannevar Bush's [As We May Think](https://www.theatlantic.com/magazine/archive/1945/07/as-we-may-think/303881/) (1945).
