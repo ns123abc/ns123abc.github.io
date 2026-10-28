@@ -66,11 +66,22 @@ def strip_png(data):
     return data[:8] + b"".join(raw for ctype, raw in png_chunks(data) if ctype in PNG_KEEP)
 
 
-def with_colour_chunks(encoded, source):
+def with_colour_chunks(encoded, source, keep_iccp):
     """Insert the source PNG's colour chunks right after IHDR, where the spec wants them."""
-    colour = b"".join(raw for ctype, raw in png_chunks(source) if ctype in PNG_COLOUR)
+    colour = b"".join(
+        raw for ctype, raw in png_chunks(source) if ctype in PNG_COLOUR and (keep_iccp or ctype != b"iCCP")
+    )
     ihdr_end = 8 + 12 + 13
     return encoded[:ihdr_end] + colour + encoded[ihdr_end:]
+
+
+def icc_for(mode, icc):
+    """Return the ICC profile only if its colour space (header bytes 16-20) matches the mode.
+
+    A CMYK or grey profile left on RGB pixels makes browsers apply the wrong transform.
+    """
+    want = b"GRAY" if mode in ("L", "LA") else b"RGB "
+    return icc if icc and icc[16:20] == want else None
 
 
 def strip_jpeg(data):
@@ -120,14 +131,14 @@ def max_error(a, b):
 
 def encode_jpeg(im, icc):
     if im.mode not in ("RGB", "L"):
-        im, icc = im.convert("RGB"), None
+        im = im.convert("RGB")
     im.info = {}
     buf = io.BytesIO()
-    im.save(buf, "JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True, icc_profile=icc)
+    im.save(buf, "JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True, icc_profile=icc_for(im.mode, icc))
     return buf.getvalue()
 
 
-def encode_png(im, source_png, palette):
+def encode_png(im, source_png, icc, palette):
     """Return (bytes, note). Lossless unless palette is set."""
     if im.mode in ("RGBA", "LA") and im.getchannel("A").getextrema() == (255, 255):
         im = im.convert(im.mode[:-1])
@@ -143,7 +154,7 @@ def encode_png(im, source_png, palette):
     im.info = {}
     buf = io.BytesIO()
     im.save(buf, "PNG", optimize=True)
-    return with_colour_chunks(buf.getvalue(), source_png), note
+    return with_colour_chunks(buf.getvalue(), source_png, icc_for(im.mode, icc) is not None), note
 
 
 def process(src, out, width, palette):
@@ -172,7 +183,7 @@ def process(src, out, width, palette):
         im = im.resize((target, max(1, round(h0 * target / w0))), Image.Resampling.LANCZOS)
 
     if fmt == "PNG":
-        encoded, how = encode_png(im, data, palette)
+        encoded, how = encode_png(im, data, icc, palette)
         if not resized and not palette and not rotated:
             stripped = strip_png(data)
             if len(stripped) <= len(encoded):
