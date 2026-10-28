@@ -2,6 +2,9 @@ name: Check
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -15,30 +18,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # build.py reads "updated" dates from git history.
           fetch-depth: 0
+          persist-credentials: false
 
-      # Lets this workflow merge before build.py lands; until then the job passes as a no-op.
-      - name: Detect build.py
-        id: guard
+      - name: Require build.py
         run: |
-          if [ -f build.py ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::build.py not found; skipping build, tests and preview."
+          if [ ! -f build.py ]; then
+            echo "::error::build.py not found; refusing to skip the build and tests."
+            exit 1
           fi
 
-      - uses: actions/setup-python@v7
-        if: steps.guard.outputs.present == 'true'
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
 
       - name: Install dependencies
-        if: steps.guard.outputs.present == 'true'
         run: |
           if [ -f requirements.txt ]; then
             python -m pip install -r requirements.txt
@@ -46,11 +46,9 @@ jobs:
           python -m pip install pytest==9.2.0
 
       - name: Build
-        if: steps.guard.outputs.present == 'true'
         run: python3 build.py
 
       - name: Test
-        if: steps.guard.outputs.present == 'true'
         run: |
           if compgen -G "tests/test_*.py" > /dev/null; then
             python -m pytest -q tests
@@ -58,14 +56,30 @@ jobs:
             echo "::notice::No tests/test_*.py found; skipping tests."
           fi
 
+      - name: Detect content/
+        id: content
+        run: |
+          if [ -d content ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # build.py exits 0 without writing site/ until content/ exists.
+      # That empty preview stays a skip. Once content/ is present, site/ is required.
       - name: Note missing site/
-        if: steps.guard.outputs.present == 'true' && hashFiles('site/**') == ''
+        if: steps.content.outputs.present == 'false' && hashFiles('site/**') == ''
         run: echo "::notice::build.py wrote no site/; skipping preview upload."
 
+      - name: Require site/ when content/ exists
+        if: steps.content.outputs.present == 'true' && hashFiles('site/**') == ''
+        run: |
+          echo "::error::content/ exists but build.py wrote no site/."
+          exit 1
+
       - name: Upload site preview
-        if: steps.guard.outputs.present == 'true' && hashFiles('site/**') != ''
-        uses: actions/upload-artifact@v7
+        if: hashFiles('site/**') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: site-preview
           path: site/
