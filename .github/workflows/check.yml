@@ -58,8 +58,13 @@ jobs:
             echo "::notice::No tests/test_*.py found; skipping tests."
           fi
 
+      # build.py exits 0 without writing site/ until content/ exists.
+      - name: Note missing site/
+        if: steps.guard.outputs.present == 'true' && hashFiles('site/**') == ''
+        run: echo "::notice::build.py wrote no site/; skipping preview upload."
+
       - name: Upload site preview
-        if: steps.guard.outputs.present == 'true'
+        if: steps.guard.outputs.present == 'true' && hashFiles('site/**') != ''
         uses: actions/upload-artifact@v7
         with:
           name: site-preview
