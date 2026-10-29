@@ -1,0 +1,554 @@
+/* Dune / Lawrence.
+   Sand, stillsuit, and the title lockup follow Denis Villeneuve's Dune (2021).
+   The diary page and the map plate follow T. E. Lawrence, Seven Pillars of Wisdom
+   (subscribers' edition, 1926). Cited in the preview footer.
+   System faces only. The film's ambigram letterforms are not drawn here. */
+
+:root {
+  --bone: #f3ecdf;
+  --bone-2: #f7f1e6;
+  --mat: #efe4d2;
+  --ink: #231c15;
+  --ink-soft: #3a2e22;
+  --dim: #4a3d30;
+  --rule: #8d7760;
+  --rule-soft: #c4b49a;
+  --suit: #2e2c2a;
+  --suit-deep: #232120;
+  --suit-rib: #3c3a37;
+  --sand: #f4eadc;
+  --sand-dim: #d9cbb6;
+  --spice: #d46a32;
+  --spice-ink: #6e3414;
+  --route: #8f322c;
+  --face-title: "Arial Narrow", "Helvetica Neue", "Liberation Sans", Arial, sans-serif;
+  --face-diary: "Iowan Old Style", Palatino, "Palatino Linotype", "Book Antiqua", "Liberation Serif", "Times New Roman", Times, serif;
+  --face-mono: ui-monospace, "Cascadia Mono", "Liberation Mono", Menlo, Consolas, monospace;
+  --sheet: 36rem;
+  --frame: 0.5rem;
+  --pad: 1.35rem;
+  --inset: calc((100% - min(var(--sheet), calc(100% - 2 * var(--frame)))) / 2 + var(--pad));
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; padding: 0; }
+
+html { text-size-adjust: 100%; }
+
+body {
+  min-height: 100vh;
+  background-color: #c6aa78;
+  background-image:
+    radial-gradient(120% 75% at 8% -8%, #f4e6cc 0%, transparent 54%),
+    radial-gradient(80% 55% at 100% 108%, #9a7048 0%, transparent 50%),
+    linear-gradient(180deg, #e6d3b0 0%, #d4b78a 46%, #c4a06e 100%);
+  color: var(--ink);
+  font: 1.125rem/1.65 var(--face-diary);
+  padding-bottom: 2rem;
+}
+
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.16em; }
+
+a:visited { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--spice-ink);
+  outline-offset: 3px;
+}
+
+::selection { background: #e7c4a2; color: var(--ink); }
+
+img, svg { max-width: 100%; }
+
+.body1, .body2 { display: contents; }
+
+/* Stillsuit collar. Vertical ribs, a spice catch, a tube along the hem. */
+
+header,
+nav.main-nav {
+  position: relative;
+  background-color: var(--suit);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--suit-deep) 0 1px,
+    var(--suit) 1px 4px,
+    var(--suit-rib) 4px 5px,
+    var(--suit) 5px 9px
+  );
+  color: var(--sand);
+  padding-inline: 1.15rem;
+  padding-inline: var(--inset);
+}
+
+header { padding-top: 1.15rem; padding-bottom: 0.45rem; }
+
+header a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  max-width: 100%;
+  color: var(--sand);
+  font-family: var(--face-title);
+  font-size: clamp(2rem, 4.2vw, 3.05rem);
+  font-weight: 700;
+  font-stretch: condensed;
+  letter-spacing: 0.28em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+header a:visited { color: var(--sand); }
+
+header a:hover { color: #fffaf3; }
+
+header a::before {
+  content: "";
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--spice);
+  box-shadow: 0 0 0 1px var(--sand);
+}
+
+header a:has(img) {
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+header img {
+  display: block;
+  width: 3.5rem;
+  height: auto;
+  border: 1px solid var(--sand-dim);
+  background: var(--suit-deep);
+}
+
+header::after {
+  content: "";
+  position: absolute;
+  top: 1.2rem;
+  right: 1.15rem;
+  right: var(--inset);
+  width: 0.9rem;
+  height: 1.5rem;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--sand), var(--sand)) 0 0 / 2px 100% no-repeat,
+    linear-gradient(var(--sand), var(--sand)) 100% 0 / 2px 100% no-repeat,
+    linear-gradient(var(--spice), var(--spice)) center 0.22rem / 0.38rem 0.38rem no-repeat;
+}
+
+nav.main-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.15rem 1.5rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.85rem;
+}
+
+nav.main-nav ul { list-style: none; }
+
+nav.main-nav ul + ul {
+  padding-left: 1.15rem;
+  box-shadow: inset 1px 0 0 rgba(244, 234, 220, 0.32);
+}
+
+nav.main-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.3rem 0.15rem;
+  color: var(--sand);
+  font-family: var(--face-title);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+nav.main-nav a:visited { color: var(--sand); }
+
+nav.main-nav a:hover {
+  color: #fffaf3;
+  text-decoration: underline;
+  text-decoration-color: var(--spice);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.28em;
+}
+
+nav.main-nav a.parent {
+  color: var(--sand-dim);
+  font-family: var(--face-diary);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+nav.main-nav a[aria-current="page"] {
+  color: #fffaf3;
+  box-shadow: inset 3px 0 0 var(--spice);
+  padding-left: 0.6rem;
+}
+
+header :focus-visible,
+nav.main-nav :focus-visible { outline-color: var(--sand); }
+
+nav.main-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background:
+    linear-gradient(#161412, #161412) top / 100% 1px no-repeat,
+    linear-gradient(#8d7b6c, #8d7b6c) bottom / 100% 2px no-repeat,
+    #4e463f;
+}
+
+nav.main-nav::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 1.15rem;
+  left: var(--inset);
+  bottom: 0;
+  width: 2.6rem;
+  height: 5px;
+  background: var(--spice);
+}
+
+/* Diary sheet. */
+
+main,
+footer.foot-nav {
+  width: min(var(--sheet), calc(100% - 2 * var(--frame)));
+  margin-inline: auto;
+  padding-inline: var(--pad);
+  background: var(--bone);
+  color: var(--ink);
+}
+
+main {
+  margin-top: 1.15rem;
+  padding-top: 1.45rem;
+  padding-bottom: 0.35rem;
+}
+
+footer.foot-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  margin-bottom: 0;
+  padding-top: 0.2rem;
+  padding-bottom: 1.35rem;
+  box-shadow: 0 16px 28px rgba(68, 40, 14, 0.16);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+main h1 {
+  margin: 0 0 1.05rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--face-title);
+  font-size: clamp(1.7rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  font-stretch: condensed;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+main h2 {
+  margin: 1.55rem 0 0.7rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--ink);
+  font-family: var(--face-title);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+main h3, main h4 {
+  margin: 1.15rem 0 0.45rem;
+  font-family: var(--face-diary);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-transform: none;
+}
+
+main h3 { font-size: 1.2rem; }
+
+main h4 { font-size: 1.05rem; }
+
+main p, main ul, main ol, main table, main figure, main pre, main hr,
+main blockquote, main article, main dl {
+  margin-bottom: 1.1rem;
+}
+
+main p { max-width: 65ch; }
+
+main ul, main ol { padding-left: 1.3rem; }
+
+main ul { list-style: square; }
+
+main ol { list-style: decimal; }
+
+main li { margin-bottom: 0.3rem; }
+
+main li::marker { color: var(--spice-ink); }
+
+main ul ul, main ol ol { margin-bottom: 0; }
+
+main a, main a:visited { color: var(--spice-ink); }
+
+main a:hover { color: #4a220c; text-decoration-thickness: 2px; }
+
+main a[href^="http"]::after,
+footer.foot-nav a[href^="http"]::after {
+  content: "\00a0\2197";
+  font-size: 0.78em;
+  text-decoration: none;
+}
+
+footer.foot-nav a:has(img)::after { content: none; }
+
+a.wanted, a.wanted:visited {
+  color: var(--dim);
+  text-decoration-style: dotted;
+  text-underline-offset: 0.2em;
+}
+
+a.wanted:hover, a.wanted:focus-visible { color: var(--spice-ink); }
+
+.incoming {
+  margin-top: 1.4rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--rule);
+  color: var(--dim);
+  font-size: 1rem;
+}
+
+.incoming b {
+  color: var(--ink);
+  font-family: var(--face-title);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.incoming a, .incoming a:visited { color: var(--ink); }
+
+main figure { margin-top: 0; }
+
+main img {
+  display: block;
+  height: auto;
+  background: var(--mat);
+}
+
+main figure img { border: 1px solid var(--rule-soft); }
+
+main figcaption {
+  margin-top: 0.55rem;
+  color: var(--ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+.kicker {
+  display: block;
+  margin-bottom: 0.28rem;
+  color: var(--spice-ink);
+  font-family: var(--face-title);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+figure.plate {
+  padding: 0.5rem 0.5rem 0.7rem;
+  background: var(--bone-2);
+  border: 1px solid var(--rule);
+}
+
+figure.plate svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bone-2);
+}
+
+figure.plate figcaption {
+  margin: 0.65rem 0.15rem 0;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--rule-soft);
+}
+
+main blockquote {
+  padding-left: 1rem;
+  border-left: 2px solid var(--spice-ink);
+  color: var(--ink-soft);
+}
+
+main blockquote > :last-child { margin-bottom: 0; }
+
+main q { font-style: italic; }
+
+main cite { font-style: italic; }
+
+main hr { border: 0; border-top: 1px solid var(--rule); }
+
+main table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+main th, main td {
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid var(--rule-soft);
+  text-align: left;
+  vertical-align: top;
+}
+
+main th {
+  border-bottom-color: var(--ink);
+  font-family: var(--face-title);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+code, kbd, pre, samp { font-family: var(--face-mono); font-size: 0.9em; }
+
+main code {
+  padding: 0.05em 0.3em;
+  background: var(--mat);
+}
+
+main pre {
+  overflow: auto;
+  max-width: 100%;
+  padding: 0.8rem 0.9rem;
+  background: var(--mat);
+  border: 1px solid var(--rule-soft);
+  line-height: 1.5;
+}
+
+main pre code { padding: 0; background: none; }
+
+main kbd {
+  display: inline-block;
+  padding: 0.05em 0.35em;
+  border: 1px solid var(--ink);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+footer.foot-nav > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+}
+
+footer.foot-nav img {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+footer.foot-nav .sources {
+  flex: 1 0 100%;
+  margin-top: 0.35rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--rule-soft);
+  color: var(--dim);
+}
+
+footer.foot-nav .sources a,
+footer.foot-nav .sources a:visited { color: var(--spice-ink); }
+
+footer.foot-nav cite { font-style: italic; }
+
+@media (max-width: 420px) {
+  :root { --pad: 1.1rem; }
+  header a { letter-spacing: 0.2em; }
+  main h1 { letter-spacing: 0.1em; }
+  nav.main-nav { column-gap: 0.75rem; }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --ink: #140e09;
+    --sand: #fffaf3;
+    --sand-dim: #fffaf3;
+    --bone: #fff;
+    --bone-2: #fff;
+    --dim: #24180f;
+    --rule: #24180f;
+    --rule-soft: #24180f;
+    --spice-ink: #5a240c;
+    --suit: #14110e;
+    --suit-deep: #14110e;
+  }
+  :focus-visible { outline-width: 3px; }
+  body { background: #fff; background-image: none; }
+  header, nav.main-nav { background: #14110e; background-image: none; }
+}
+
+@media (forced-colors: active) {
+  body, header, nav.main-nav, main, footer.foot-nav, figure.plate {
+    background: Canvas;
+    color: CanvasText;
+    background-image: none;
+    box-shadow: none;
+  }
+  a, header a, nav.main-nav a { color: LinkText; }
+  :focus-visible { outline: 3px solid Highlight; }
+  nav.main-nav a[aria-current="page"] { outline: 2px solid Highlight; box-shadow: none; }
+  figure.plate, main th, main td, main hr, .incoming, main blockquote, footer.foot-nav .sources {
+    border-color: CanvasText;
+  }
+  .plate .ridge, .plate .wash, .plate .frame, .plate .camp, .plate .north, .plate .scale {
+    stroke: CanvasText;
+    fill: Canvas;
+  }
+  .plate .route, .plate .arrow { stroke: LinkText; fill: none; }
+}
+
+@media print {
+  body { background: #fff; background-image: none; padding: 0; }
+  header, nav.main-nav {
+    background: #fff;
+    color: #000;
+    background-image: none;
+  }
+  header a, header a:visited, nav.main-nav a, nav.main-nav a:visited { color: #000; }
+  main, footer.foot-nav { width: auto; box-shadow: none; }
+}
