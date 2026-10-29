@@ -1,0 +1,713 @@
+/* Metropolis / Bauhaus
+   A theme for the wiki skeleton: header, nav.main-nav, main, footer.foot-nav.
+   Night city and the black title card come from Fritz Lang's Metropolis
+   (Ufa, premiered 10 January 1927). Art of the Title credits Erich Kettelhut
+   with those cards. The yellow street answers Heinz Schulz-Neudamm's 1926
+   poster (MoMA 80.1961.1) without using its image.
+   The module, the single-case lines, and the circle, square, and triangle
+   come from Walter Gropius's Dessau building (opened 4 December 1926),
+   Herbert Bayer's Universal alphabet (1925), and the Bauhaus preliminary
+   course. The workshop plate is a sample, not a historical stamp.
+   No images, no webfonts, no JavaScript. Sources are in the specimen footer.
+*/
+
+:root {
+  --night: #07080c;
+  --ink: #16181c;
+  --paper: #f3efe4;
+  --sheet: #fffdf8;
+  --yellow: #f2c200;
+  --red: #e10600;
+  --blue: #1a5cff;
+  --link: #123a9e;
+  --cream: #f3efe4;
+  --dim: #3e4450;
+  --card: "Arial Narrow", "Nimbus Sans Narrow", "Noto Sans Display", "Liberation Sans", "Noto Sans", sans-serif;
+  --workshop: Futura, "Century Gothic", "Avenir Next", "Gill Sans", "Trebuchet MS", "Noto Sans", "Liberation Sans", sans-serif;
+  --mono: "Cascadia Mono", "Liberation Mono", ui-monospace, monospace;
+  --rail: 960px;
+  --measure: 40rem;
+  --module: 48px;
+  --edge: max(16px, calc((100% - var(--rail)) / 2));
+  color-scheme: light dark;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
+
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--cream);
+  font-family: var(--workshop);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
+
+::selection { background: var(--yellow); color: var(--ink); }
+
+:focus { outline: none; }
+
+:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--ink);
+}
+
+.skip:not(:focus):not(:focus-visible) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip:focus,
+.skip:focus-visible {
+  position: absolute;
+  left: 16px;
+  top: 8px;
+  z-index: 3;
+  padding: 8px 12px;
+  background: var(--yellow);
+  color: var(--ink);
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+/* Strata labels. The page is a section cut: sky, street, hall, machine. */
+.stratum {
+  margin: 0 0 12px;
+  font-family: var(--card);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.stratum .num { margin-right: 0.35em; }
+
+header .stratum,
+footer .stratum { color: var(--cream); }
+
+header .stratum .num,
+footer .stratum .num { color: var(--yellow); }
+
+nav .stratum,
+main .stratum { color: var(--ink); }
+
+header .stratum {
+  margin: 16px var(--edge) 12px;
+}
+
+/* 01 sky. A curtain-wall band, then the title card on solid night. */
+header {
+  position: relative;
+  padding: 0 0 28px;
+  border-bottom: 4px solid var(--cream);
+  background: var(--night);
+  color: var(--cream);
+  color-scheme: dark;
+}
+
+header::before {
+  content: "";
+  display: block;
+  height: 80px;
+  background-color: var(--night);
+  /* The top layer masks the columns into rows of windows. */
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 16px,
+      var(--night) 16px 40px
+    ),
+    repeating-linear-gradient(
+      to right,
+      transparent 0 14px,
+      rgba(242, 194, 0, 0.96) 14px 28px,
+      transparent 28px 40px,
+      rgba(242, 194, 0, 0.62) 40px 52px,
+      transparent 52px 70px,
+      rgba(243, 239, 228, 0.22) 70px 71px,
+      transparent 71px 92px
+    );
+}
+
+header a {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: fit-content;
+  max-width: calc(100% - (var(--edge) * 2));
+  margin-left: var(--edge);
+  padding: 4px 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+header img {
+  display: block;
+  width: 72px;
+  height: auto;
+  flex: none;
+}
+
+.tower {
+  display: grid;
+  grid-template-columns: 30px 30px;
+  grid-template-areas:
+    "spire spire"
+    "room heart";
+  gap: 6px;
+  width: 66px;
+  flex: none;
+}
+
+.tower .tri { grid-area: spire; width: 48px; height: 28px; justify-self: center; }
+.tower .sq { grid-area: room; width: 30px; height: 30px; }
+.tower .circ { grid-area: heart; width: 30px; height: 30px; }
+
+.tri {
+  display: block;
+  background: var(--yellow);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.sq { display: block; background: var(--red); }
+
+.circ {
+  display: block;
+  background: var(--blue);
+  border-radius: 50%;
+}
+
+.mast-text { min-width: 0; }
+
+.kicker,
+.sub {
+  display: block;
+  font-family: var(--workshop);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  text-transform: lowercase;
+}
+
+.word {
+  display: block;
+  margin-right: -0.08em;
+  font-family: var(--card);
+  font-size: clamp(1.7rem, 0.7rem + 4.4vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.sub {
+  margin-top: 4px;
+  color: var(--yellow);
+  font-size: 1.25rem;
+  letter-spacing: 0.2em;
+}
+
+header a:hover .word,
+header a:focus-visible .word {
+  text-decoration: underline;
+  text-decoration-thickness: 4px;
+  text-decoration-color: var(--red);
+  text-underline-offset: 6px;
+}
+
+/* 02 street. A yellow roadway ruled like a workshop grid. */
+nav.main-nav {
+  padding: 16px var(--edge) 20px;
+  background: var(--yellow);
+  color: var(--ink);
+  color-scheme: light;
+}
+
+nav.main-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: var(--rail);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--ink);
+  border-left: 2px solid var(--ink);
+}
+
+nav.main-nav li {
+  display: flex;
+  flex: 1 1 9rem;
+}
+
+nav.main-nav ul + ul { margin-top: 10px; }
+
+nav.main-nav a {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 16px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  background: var(--yellow);
+  color: var(--ink);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+nav.main-nav a:hover {
+  background: var(--ink);
+  color: var(--yellow);
+}
+
+nav.main-nav a[aria-current="page"] {
+  background: var(--ink);
+  color: var(--yellow);
+  box-shadow: inset 0 4px 0 var(--red);
+}
+
+nav.main-nav a.parent { box-shadow: inset 4px 0 0 var(--red); }
+
+nav.main-nav a.parent[aria-current="page"] {
+  box-shadow: inset 4px 0 0 var(--red), inset 0 4px 0 var(--yellow);
+}
+
+/* 03 hall. Graph paper, a mounted title card, the sample stamp. */
+main {
+  padding: 36px var(--edge) 72px;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(to right, rgba(22, 24, 28, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 24, 28, 0.14) 1px, transparent 1px);
+  background-size: var(--module) var(--module);
+  color: var(--ink);
+  color-scheme: light;
+}
+
+main:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: -6px;
+  box-shadow: none;
+}
+
+main h1 {
+  margin: 8px 0 48px;
+  padding: 36px 16px 32px  calc(16px + 0.16em);
+  background: var(--night);
+  box-shadow:
+    inset 0 0 0 1px rgba(243, 239, 228, 0.28),
+    0 0 0 12px var(--paper);
+  border-top: 6px solid var(--yellow);
+  border-bottom: 6px solid var(--yellow);
+  color: var(--cream);
+  font-family: var(--card);
+  font-size: clamp(2.5rem, 1rem + 4vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+main h2,
+main h3 {
+  clear: both;
+  margin: 32px 0 16px;
+  font-family: var(--card);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+main h2 { font-size: 1.5rem; }
+main h3 { font-size: 1.125rem; letter-spacing: 0.06em; }
+
+main h2::before {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 6px;
+  margin-bottom: 8px;
+  background: var(--red);
+}
+
+main > p,
+main > ul,
+main > ol,
+main > blockquote,
+main > table,
+main > pre,
+main .incoming {
+  max-width: var(--measure);
+  background: var(--paper);
+  box-shadow: 0 0 0 10px var(--paper);
+}
+
+main > p { margin: 0 0 24px; }
+
+main a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+main a:hover,
+main a:focus-visible {
+  background: var(--yellow);
+  color: var(--ink);
+  outline-color: var(--yellow);
+}
+
+a.wanted { text-decoration-style: dotted; }
+
+main ul,
+main ol { margin: 0 0 24px; padding-left: 1.25rem; }
+
+main li { margin: 0.2em 0; }
+
+main ul ul,
+main ol ol { margin: 0; box-shadow: none; background: transparent; }
+
+.workshop-label {
+  display: flex;
+  width: min(100%, 28rem);
+  margin: 0 0 48px;
+  border: 2px solid var(--ink);
+  background: var(--sheet);
+  box-shadow: 0 0 0 12px var(--paper);
+}
+
+.workshop-label .forms {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 72px;
+  padding: 12px 8px;
+  background: var(--night);
+}
+
+.workshop-label .tri { width: 36px; height: 22px; }
+.workshop-label .sq,
+.workshop-label .circ { width: 22px; height: 22px; }
+
+.workshop-label figcaption {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 16px 16px;
+}
+
+.plate-name {
+  margin-right: -0.14em;
+  font-family: var(--card);
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+.plate-shop {
+  font-size: 1.125rem;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: lowercase;
+}
+
+.plate-note {
+  max-width: 28ch;
+  color: var(--dim);
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+main blockquote {
+  margin: 0 0 24px;
+  padding: 4px 0 4px 16px;
+  border-left: 8px solid var(--blue);
+}
+
+main hr {
+  display: block;
+  height: 0;
+  margin: 32px 0;
+  border: 0;
+  border-top: 4px solid var(--red);
+  background: transparent;
+  box-shadow: none;
+}
+
+main img,
+main svg,
+main video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+main table {
+  border-collapse: collapse;
+  margin: 0 0 24px;
+  font-size: 1rem;
+}
+
+main th,
+main td {
+  padding: 8px 10px;
+  border: 1px solid var(--ink);
+  text-align: left;
+  vertical-align: top;
+}
+
+main code,
+main kbd,
+main pre,
+main samp { font-family: var(--mono); }
+
+main code {
+  padding: 0 0.25em;
+  background: #e4ddcf;
+  font-size: 0.9em;
+}
+
+main pre {
+  margin: 0 0 24px;
+  padding: 16px;
+  overflow: auto;
+  background: var(--night);
+  color: var(--cream);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+main pre code { padding: 0; background: transparent; color: inherit; }
+
+main .incoming {
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 2px solid var(--ink);
+  font-size: 1rem;
+}
+
+main .incoming b {
+  font-family: var(--card);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* 04 machine. Rings, shafts, then the sources. */
+footer.foot-nav {
+  padding: 28px var(--edge) 56px;
+  border-top: 8px solid var(--red);
+  background: var(--night);
+  color: var(--cream);
+  color-scheme: dark;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+footer.foot-nav > a { display: inline-block; margin: 0 8px 8px 0; }
+
+footer.foot-nav img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+.machine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--red);
+}
+
+.machine span {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--cream);
+  border-radius: 50%;
+}
+
+.machine span.hot {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.shafts { margin: 14px 0 8px; }
+
+.shafts span {
+  display: block;
+  height: 4px;
+  margin-top: 8px;
+  background: var(--cream);
+}
+
+.shafts span:nth-child(1) { width: min(100%, 28rem); }
+.shafts span:nth-child(2) { width: min(64%, 16rem); background: var(--yellow); }
+.shafts span:nth-child(3) { width: min(88%, 22rem); height: 8px; background: var(--red); }
+
+footer h2 {
+  margin: 28px 0 8px;
+  font-family: var(--workshop);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: lowercase;
+}
+
+footer h2::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background: var(--yellow);
+  vertical-align: -1px;
+}
+
+footer ul {
+  max-width: 42rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+footer li {
+  padding: 12px 0;
+  border-top: 1px solid rgba(243, 239, 228, 0.4);
+  overflow-wrap: break-word;
+}
+
+footer a {
+  color: var(--cream);
+  text-underline-offset: 0.18em;
+}
+
+footer a:hover,
+footer a:focus-visible {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+.colophon {
+  max-width: 42rem;
+  margin: 20px 0 0;
+  color: var(--cream);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 420px) {
+  header::before { height: 56px; }
+  header a { gap: 12px; }
+  .word { font-size: 1.85rem; letter-spacing: 0.04em; }
+  .tower { width: 56px; gap: 4px; grid-template-columns: 26px 26px; }
+  .tower .tri { width: 40px; height: 22px; }
+  .tower .sq,
+  .tower .circ { width: 26px; height: 26px; }
+  main { padding-top: 24px; padding-bottom: 48px; }
+  main h1 {
+    margin-bottom: 36px;
+    padding: 24px 10px 20px calc(10px + 0.08em);
+    letter-spacing: 0.08em;
+    font-size: 2.25rem;
+  }
+  .workshop-label { margin-bottom: 36px; }
+}
+
+@media (min-width: 1280px) {
+  header::before { height: 104px; }
+  .word { letter-spacing: 0.12em; }
+  main h1 { letter-spacing: 0.2em; padding-left: calc(16px + 0.2em); }
+}
+
+@media (prefers-contrast: more) {
+  :root { --paper: #fff; --sheet: #fff; --dim: #1a1a1a; }
+  main {
+    background-image:
+      linear-gradient(to right, rgba(0, 0, 0, 0.45) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 1px, transparent 1px);
+  }
+  :focus-visible { outline-width: 4px; }
+  footer li { border-top-color: var(--cream); }
+}
+
+@media (forced-colors: active) {
+  header, nav.main-nav, main, footer.foot-nav, main h1, .workshop-label {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+  .tri, .sq, .circ, .machine span, .shafts span {
+    background: CanvasText;
+    border-color: CanvasText;
+    forced-color-adjust: none;
+  }
+  .tri {
+    background: transparent;
+    clip-path: none;
+    width: 0;
+    height: 0;
+    border-right: 14px solid transparent;
+    border-left: 14px solid transparent;
+    border-bottom: 24px solid CanvasText;
+  }
+  nav.main-nav a, nav.main-nav a[aria-current="page"] {
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  :focus-visible { outline: 3px solid Highlight; box-shadow: none; }
+}
+
+@media print {
+  header, nav.main-nav, main, footer.foot-nav, main h1 {
+    background: #fff;
+    color: #000;
+    box-shadow: none;
+  }
+  .word, .sub, header .stratum .num { color: #000; }
+  nav.main-nav a, nav.main-nav a[aria-current="page"] {
+    background: #fff;
+    color: #000;
+    border-bottom: 1px solid #000;
+  }
+  .machine span.hot, .shafts span, .sq, .circ, .tri { background: #000; }
+}
